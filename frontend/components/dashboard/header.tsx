@@ -32,9 +32,8 @@ export default function Header({ session, logout }: { session: any, logout: Func
             <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
                 <div className="ml-auto sm:flex-initial space-x-2">
                     <Button>
-                        <Plus className="h-5 w-5" />
-                        <span className="sr-only">Create New</span>
                         New
+                        <Plus className="h-5 w-5" />
                     </Button>
                     <NotificationMenu/>
                 </div>
