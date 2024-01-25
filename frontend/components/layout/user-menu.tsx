@@ -36,10 +36,10 @@ export default function UserMenu({ user, logout }: { user: User, logout: Functio
             <Separator />
           </div>
           <div className="space-y-1">
-            <Button variant={'ghost'} className="w-full flex justify-between">
+            {/* <Button variant={'ghost'} className="w-full flex justify-between">
               <p className="text-sm">Dashboard</p>
               <LayoutDashboard className="w-4 h-4" />
-            </Button>
+            </Button> */}
             <div className="items-center whitespace-nowrap rounded-md text-sm font-medium h-10 px-4 py-2 w-full flex justify-between">
               <p className="text-sm">Theme</p>
               <ThemeSwitcher  className="-mr-1"/>
