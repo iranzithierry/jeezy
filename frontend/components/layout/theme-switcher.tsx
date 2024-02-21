@@ -28,7 +28,6 @@ export default function ThemeSwitcher({ className }: ThemeSwitcherProps) {
             <PopoverContent className="p-0 w-fit">
                 <Command>
                     <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
                         <CommandGroup>
                             <CommandItem onSelect={() => setTheme('dark')} className="text-xs">
                                 <MoonIcon className="h-3 w-3 mr-2 " />
