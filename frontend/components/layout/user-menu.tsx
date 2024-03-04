@@ -52,7 +52,7 @@ export default function UserMenu({ user, logout }: { user: User, logout: Functio
           </div>
         </PopoverContent>
         <PopoverTrigger asChild>
-          <button onClick={() => setOpenPopover(!openPopover)} className="flex items-center justify-center w-8 h-8 overflow-hidden transition-all duration-75 border border-gray-300 rounded-full focus:outline-none active:scale-95 sm:h-9 sm:w-9">
+          <button onClick={() => setOpenPopover(!openPopover)} className="flex items-center justify-center w-8 h-8 overflow-hidden transition-all duration-75 border rounded-full focus:outline-none active:scale-95 sm:h-9 sm:w-9">
             {/* @ts-ignore */}
             <Image alt={user?.email ?? user?.name} loader={(({ src }) => src)} priority={true} src={user?.image || `https://ui-avatars.com/api/?name=${getNameAbreviation(user.name)}&color=FFFFFF&background=09090b`} width={40} height={40} />
           </button>
