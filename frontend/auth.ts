@@ -1,6 +1,6 @@
 import NextAuth, { type DefaultSession } from 'next-auth'
 import GitHub from 'next-auth/providers/github'
-import { loginResponse } from './types';
+import { loginResponse } from './types/auth';
 import { cookies } from 'next/headers';
 import { createSession } from './lib/sessions';
 import BACKEND_URLS from './constants/backend-urls';

@@ -1,14 +1,14 @@
 "use client";
-import { useState } from "react";
-import { LayoutDashboard, LogOut } from "lucide-react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { User } from "@/types/auth";
 import Image from "next/image";
-import { User } from "@/types";
-import { Button } from "../ui/button";
+import { useState } from "react";
+import { LogOut } from "lucide-react";
 import { Separator } from "../ui/separator";
 import ThemeSwitcher from "./theme-switcher";
+import { LinkButton } from "../ui/link-button";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
-export default function UserMenu({ user, logout }: { user: User, logout: Function }) {
+export default function UserMenu({ user }: { user?: User }) {
   const [openPopover, setOpenPopover] = useState(false);
   if (!user) return null
   const getNameAbreviation = (name: string) => {
@@ -45,16 +45,16 @@ export default function UserMenu({ user, logout }: { user: User, logout: Functio
               <ThemeSwitcher  className="-mr-1"/>
             </div>
             <Separator/>
-            <Button variant={'ghost'} className="w-full flex justify-between hover:bg-destructive hover:text-white" onClick={() => logout()}>
+            <LinkButton linkTo="/logout" variant={'ghost'} className="w-full flex justify-between hover:bg-destructive hover:text-white">
               <p className="text-sm">Logout</p>
               <LogOut className="w-4 h-4" />
-            </Button>
+            </LinkButton>
           </div>
         </PopoverContent>
         <PopoverTrigger asChild>
-          <button onClick={() => setOpenPopover(!openPopover)} className="flex items-center justify-center w-8 h-8 overflow-hidden transition-all duration-75 border rounded-full focus:outline-none active:scale-95 sm:h-9 sm:w-9">
+          <button onClick={() => setOpenPopover(!openPopover)} className="flex items-center justify-center w-10 h-10 overflow-hidden transition-all duration-75  rounded-full focus:outline-none active:scale-95 sm:h-10 sm:w-10">
             {/* @ts-ignore */}
-            <Image alt={user?.email ?? user?.name} loader={(({ src }) => src)} priority={true} src={user?.image || `https://ui-avatars.com/api/?name=${getNameAbreviation(user.name)}&color=FFFFFF&background=09090b`} width={40} height={40} />
+            <Image alt={user?.email ?? user?.name} loader={(({ src }) => src)} priority={true} src={user?.image || `https://ui-avatars.com/api/?name=${getNameAbreviation(user?.name)}&color=FFFFFF&background=09090b`} width={50} height={50} />
           </button>
         </PopoverTrigger>
       </Popover>

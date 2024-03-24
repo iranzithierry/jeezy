@@ -117,7 +117,7 @@ export function ProjectsTable({ projects = [] }: { projects: ProjectsResponse[] 
                         table.getColumn("name")?.setFilterValue(event.target.value)
                     } />
             </div>
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup: any) => (

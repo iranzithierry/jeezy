@@ -7,6 +7,7 @@ import { deleteCookie } from './cookies'
 import { redirect } from 'next/navigation'
 import { NextRequest, NextResponse } from 'next/server'
 import BACKEND_URLS from '@/constants/backend-urls'
+import { Session, User } from '@/types/auth'
 
 const getCookieSessionValue = () => cookies().get("session")?.value;
 
@@ -18,7 +19,8 @@ export async function createSession(payload: object) {
 
 export async function getSession() {
   try {
-    return await decrypt(getCookieSessionValue())
+    const decryptedSession = await decrypt(getCookieSessionValue())
+    return decryptedSession as unknown as Session
   } catch (error) {
     return null
   }
