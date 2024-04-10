@@ -8,6 +8,7 @@ import UserMenu from '@/components/layout/user-menu';
 import Logo from "../logo";
 import NotificationMenu from "../layout/notification-menu";
 import { Session } from "@/types/auth";
+import { LinkButton } from "../ui/link-button";
 
 export default function Header({ session }: { session?: Session}) {
     return (
@@ -32,10 +33,10 @@ export default function Header({ session }: { session?: Session}) {
             </Sheet>
             <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
                 <div className="ml-auto sm:flex-initial items-center flex space-x-2">
-                    <Button>
+                    <LinkButton linkTo="/projects/new">
                         New
                         <Plus className="h-5 w-5" />
-                    </Button>
+                    </LinkButton>
                     <NotificationMenu/>
                 </div>
                 <UserMenu user={session?.user}/>
