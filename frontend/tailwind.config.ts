@@ -20,7 +20,9 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular"],
+        display: ["var(--font-display)", "Inter", "ui-monospace", "SFMono-Regular"],
       },
       colors: {
         border: "hsl(var(--border))",
