@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  docs:
+    image: jeezy_local_docs
+    container_name: jeezy_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./jeezy:/app/jeezy:z
+    ports:
+      - '9000:9000'
+    command: /start-docs
