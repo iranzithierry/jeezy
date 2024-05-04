@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers"
 import { Toaster } from 'sonner'
-import { Analytics } from "@vercel/analytics/react"
+// import { Analytics } from "@vercel/analytics/react"
 
 import { displayFont, monoFont } from "@/lib/fonts";
 
@@ -33,7 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <main>{children}</main>
         </ThemeProvider>
-        <Analytics />
+        {/* <Analytics /> */}
       </body>
     </html>
   );

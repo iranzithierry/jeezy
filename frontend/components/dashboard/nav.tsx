@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Blocks, GridIcon, Home, Paperclip, PlaneIcon, Settings } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Logo from '../logo';
+import { usePathname } from 'next/navigation';
 
 const iconComponents = {
     Home: <Home />,
@@ -15,7 +16,7 @@ const iconComponents = {
 };
 
 export default function Nav() {
-    const currentPathName = window.location.pathname
+    const currentPathName = usePathname()
 
     const menus = [
         {

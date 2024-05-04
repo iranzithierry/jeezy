@@ -2,8 +2,9 @@
 import React from 'react'
 import Link from 'next/link'
 import useScroll from '@/lib/hooks/use-scroll';
-import { Button } from '../ui/button';
 import Logo from '../logo';
+import { LinkButton } from '../ui/link-button';
+import UserOrLogin from './user-or-login';
 
 export default function Header() {
     const scrolled = useScroll(50);
@@ -12,7 +13,7 @@ export default function Header() {
             ? "border-b border-gray-200 bg-white/50 backdrop-blur-xl"
             : "bg-white/0"
             } z-30 transition-all`}>
-            <Logo/>
+            <Logo />
             <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
                 <div>
                     <Link className="font-medium hover:underline underline-offset-4" href="#">
@@ -35,9 +36,9 @@ export default function Header() {
                     </Link>
                 </div>
                 <div>
-                    <Button>
+                <LinkButton linkTo='/auth/signin'>
                         Sign In
-                    </Button>
+                    </LinkButton>
                 </div>
             </nav>
         </header>

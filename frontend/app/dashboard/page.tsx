@@ -8,7 +8,11 @@ import { DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuContent, Dro
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CalendarClockIcon, ChevronDownIcon, GitBranchIcon, GitCommitVerticalIcon, MoveHorizontalIcon } from 'lucide-react'
+import { Metadata } from 'next'
 
+export const metadata: Metadata = {
+    title: "Dashboard",
+}
 export default function Dashboard() {
     return (
         <main className="flex min-h-[calc(100vh_-_theme(spacing.16))]  flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
