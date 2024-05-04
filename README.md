@@ -1,93 +1,97 @@
-# jeezy
+# Jeezy
 
-The VPS Deployer with interactive UI built on top of django
+Jeezy is a  hosting platform similar to Vercel, allowing users to deploy their websites for free. It is built with Next.js for the frontend and Django for the backend.
 
-[![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+## Technologies Used
 
-## Settings
+- Frontend: Next.js
+- Backend: Django
 
-Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
+## Features
 
-## Basic Commands
+- User authentication with (Github)
+- Website deployment via Github repositories
+- Database integration
+- Project management
+- Wide range of templates
+- Deployment status management
+- Logs
+- Analytics
+- Free hosting
 
-### Setting Up Your Users
+## Installation
 
-- To create a **superuser account**, use this command:
+To run Jeezy locally, follow these steps:
 
-      $ python manage.py createsuperuser
+1. Clone the repository:
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+   ```bash
+   git clone https://github.com/iranzithierry/jeezy.git
+   ```
 
-### Type checks
+2. Navigate to the project directory:
 
-Running type checks with mypy:
+   ```bash
+   cd jeezy
+   ```
 
-    $ mypy jeezy
+3. Install dependencies for both frontend and backend:
 
-### Test coverage
+   ```bash
+   # Install frontend dependencies
+   cd frontend
+   npm install
 
-To run the tests, check your test coverage, and generate an HTML coverage report:
+   # Install backend dependencies
+   cd ../backend
+   pip install -r /requirements/ `ALL FILES`
 
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+   ```
 
-#### Running tests with pytest
+4. Configure environment variables:
+   
+   - Create a `.env` file in the backend directory and add necessary variables such as database credentials, secret key, etc.
 
-    $ pytest
+5. Run migrations:
 
-### Live reloading and Sass CSS compilation
+   ```bash
+   cd backend
+   virtualenv env
+   source env/bin/activate
+   python manage.py migrate
+   ```
 
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading).
+6. Start the development servers:
 
-### Celery
+   ```bash
+   # Start frontend server
+   cd ../frontend
+   npm run dev
 
-This app comes with Celery.
+   # Start backend server
+   cd ../backend
+   python manage.py runserver
+   ```
 
-To run a celery worker:
+## Usage
 
-```bash
-cd jeezy
-celery -A config.celery_app worker -l info
-```
-
-Please note: For Celery's import magic to work, it is important _where_ the celery commands are run. If you are in the same folder with _manage.py_, you should be right.
-
-To run [periodic tasks](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html), you'll need to start the celery beat scheduler service. You can start it as a standalone process:
-
-```bash
-cd jeezy
-celery -A config.celery_app beat
-```
-
-or you can embed the beat service inside a worker with the `-B` option (not recommended for production use):
-
-```bash
-cd jeezy
-celery -A config.celery_app worker -B -l info
-```
-
-### Email Server
-
-In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use [Mailpit](https://github.com/axllent/mailpit) when generating the project a local SMTP server with a web interface will be available.
-
-1.  [Download the latest Mailpit release](https://github.com/axllent/mailpit/releases) for your OS.
-
-2.  Copy the binary file to the project root.
-
-3.  Make it executable:
-
-        $ chmod +x mailpit
-
-4.  Spin up another terminal window and start it there:
-
-        ./mailpit
-
-5.  Check out <http://127.0.0.1:8025/> to see how it goes.
-
-Now you have your own mail server running locally, ready to receive whatever you send it.
+Once the servers are running locally, you can access the website at `http://localhost:3000` in your browser.
 
 ## Deployment
+Comming Soon
 
-The following details how to deploy this application.
+## Contribution
+
+Contributions are welcome! If you'd like to contribute to Jeezy, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch.
+3. Make your changes.
+4. Commit your changes.
+5. Push to the branch.
+6. Create a new Pull Request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+```
