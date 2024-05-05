@@ -287,7 +287,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "jeezy API",
     "DESCRIPTION": "Documentation of API endpoints of jeezy",
     "VERSION": "1.0.0",
-    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
+    # "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
@@ -295,5 +295,6 @@ SPECTACULAR_SETTINGS = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=8),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
+    "TOKEN_OBTAIN_SERIALIZER": "jeezy.users.api.serializers.MyTokenObtainPairSerializer",
 }
 APPEND_SLASH = True

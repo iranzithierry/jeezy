@@ -9,24 +9,40 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SpinnerIcon } from "../ui/icons"
 import { signIn } from "next-auth/react"
+import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string } { }
 
 export function UserAuthForm({ className, type = "signup", ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const { register, handleSubmit, formState: { errors }, setError } = useForm();
+  const onError = (error: any) => console.log(error);
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+  // const router = useRouter()
+  const onSubmit = async (data: any) => {
+    try {
+      setIsLoading(true)
+      signIn("credentials", { ...data, redirect: false, callbackUrl: "/" }).then((response) => {
+        if (response?.error?.endsWith("401")) {
+          setError("credentialsError", { message: "There was a problem with your login" });
+          return;
+        }
+        if (response?.error == null) {
+          window.location.href = "/dashboard"
+          return;
+        }
+        setError("credentialsError", { message: response?.error });
 
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+      })
+    }
+    catch (error: any) { console.error(error.message) }
+    finally { setIsLoading(false) }
   }
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -34,19 +50,58 @@ export function UserAuthForm({ className, type = "signup", ...props }: UserAuthF
             </Label>
             <Input
               id="email"
-              placeholder="name@example.com"
-              type="email"
+              placeholder="username@gmail.com"
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
+              {...register('email',
+                {
+                  required: {
+                    value: true,
+                    message: "Email is required"
+                  },
+                  pattern: {
+                    value: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                    message: "Email you provided is invalid"
+                  }
+                })
+              }
             />
+            {errors.email &&
+              // @ts-ignore
+              <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.email?.message}</span>
+            }
           </div>
+          {type == "signin" && (
+            <div className="grid gap-1">
+            <Label className="sr-only" htmlFor="password">
+              Password
+            </Label>
+            <Input
+              id="password"
+              autoComplete="new-password"
+              disabled={isLoading}
+              {...register('password',
+                {
+                  required: {
+                    value: true,
+                    message: "Password is required"
+                  }
+                })
+              }
+            />
+            {errors.password &&
+              // @ts-ignore
+              <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.password?.message}</span>
+            }
+          </div>
+          )}
           <Button disabled={isLoading}>
             {isLoading && (
               <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
             )}
-            {type[0].toUpperCase()+type.slice(1)} with Email
+            {type[0].toUpperCase() + type.slice(1)} with Email
           </Button>
         </div>
       </form>

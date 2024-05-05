@@ -1,72 +1,70 @@
-from rest_framework import status, permissions, views
+from rest_framework import status, permissions, generics
 from rest_framework.response import Response
-from jeezy.users.models import User
-from .serializers import UserSerializer, UserSerializer
-from rest_framework import generics
 from rest_framework.request import Request
-from django.http import HttpResponse
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.conf import settings
+from rest_framework.decorators import api_view
+from jeezy.users.tasks import send_verification_email
+from jeezy.users.models import User, EmailVerification
+from jeezy.users.forms import EmailSignUpForm, CompleteSignUpForm
+from .serializers import UserSerializer
 
 class SelfGetAPIView(generics.GenericAPIView):
-    serializer_class = UserSerializer  # Define serializer_class attribute
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request: Request) -> HttpResponse:
-        """
-        Returns the full user details for the authenticated user.
+    def get(self, request: Request) -> Response:
+        return Response({"user": UserSerializer(request.user).data}, status=status.HTTP_200_OK)
 
-        Uses the UserSerializer to serialize the user data and
-        returns it in the response.
-        """
-        # Since serializer_class attribute is defined, you don't need to assign it here
-        return Response(
-            {
-                "user": UserSerializer(
-                    request.user, context=self.get_serializer_context()
-                ).data,
-            },
-            status=status.HTTP_200_OK,
-        )
-
-    def patch(self, request: Request) -> HttpResponse:
-        """
-        Updates the authenticated user's profile.
-
-        Accepts a partial UserSerializer with the updated data. Validates the data, saves the updated user profile if valid, and returns the serialized user data. If invalid, returns a 400 error with the validation errors.
-        """
+    def patch(self, request: Request) -> Response:
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class SignUpView(generics.GenericAPIView):
-    def post(self, request: Request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            try:
-                user = User.objects.create_user(**serializer.validated_data)
-            except Exception as e:
-                raise HttpResponse("Something goes wrong registering")
-            return Response(
-                {
-                    "user": UserSerializer(
-                        user, context=self.get_serializer_context()
-                    ).data,
-                    **get_tokens_for_user(user),
-                },
-                status=status.HTTP_200_OK,
-            )
+@api_view(['POST'])
+def email_sign_up(request):
+    form = EmailSignUpForm(request.data)
+    if form.is_valid():
+        email = form.cleaned_data['email']
+        user, created = User.objects.get_or_create(email=email)
+        if created:
+            token = generate_token()
+            EmailVerification.objects.create(user=user, token=token)
+            send_verification_email.delay(user.email, token)
+            return Response({'detail': 'Email verification link sent'}, status=status.HTTP_200_OK)
         else:
-            return HttpResponse("Something goes wrong try again later.")
+            return Response({'error': 'User already exists'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def email_verification(request):
+    token = request.data.get('token')
+    try:
+        verification = EmailVerification.objects.get(token=token)
+        return Response({'email': verification.user.email}, status=status.HTTP_200_OK)
+    except EmailVerification.DoesNotExist:
+        return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def complete_sign_up(request):
+    form = CompleteSignUpForm(request.data)
+    if form.is_valid():
+        name = form.cleaned_data['name']
+        email = form.cleaned_data['email']
+        password = form.cleaned_data['password']
+        user = User.objects.get(email=email)
+        if user:
+            user.set_password(password)
+            user.name = name
+            user.save()
+            return Response({'detail': 'Sign up successful'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'User already exists'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def get_tokens_for_user(user):
-    refresh = RefreshToken.for_user(user)
-
-    return {
-        "refresh": str(refresh),
-        "access": str(refresh.access_token),
-    }
+def generate_token():
+    import secrets
+    import string
+    
+    return''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32))

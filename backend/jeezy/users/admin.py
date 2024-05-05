@@ -9,8 +9,8 @@ from .models import User
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (
-        (None, {"fields": ("email", "password", "location", "verified_at", "banned_at")}),
-        (_("Personal info"), {"fields": ("names",)}),
+        (None, {"fields": ("email", "password")}),
+        (_("Personal info"), {"fields": ("username",)}),
         (
             _("Permissions"),
             {
@@ -25,8 +25,8 @@ class UserAdmin(auth_admin.UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
-    list_display = ["email", "names", "is_superuser"]
-    search_fields = ["names", "email"]
+    list_display = ["email", "username", "is_superuser"]
+    search_fields = ["username", "email"]
     ordering = ["id"]
     list_filter = (
         "is_staff",
@@ -39,7 +39,7 @@ class UserAdmin(auth_admin.UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("names", "email", "password1", "password2"),
+                "fields": ("username", "email", "password1", "password2"),
             },
         ),
     )
