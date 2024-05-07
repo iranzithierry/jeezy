@@ -11,6 +11,7 @@ import { CalendarClockIcon, ChevronDownIcon, CloudUpload, GitBranchIcon, GitComm
 import { Metadata } from 'next'
 import { Card, CardContent } from '@/components/ui/card'
 import { LinkButton } from '@/components/ui/link-button'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -65,8 +66,8 @@ export default function Dashboard() {
                             <div className="grid gap-4">
                                 <div className="flex items-center justify-between">
                                     <h4 className="text-lg font-semibold">Deploy to Jeezy</h4>
-                                    <img
-                                        alt="Templates Preview"
+                                    <Image
+                                        alt="Frameworks group"
                                         className="rounded-md"
                                         height="60"
                                         src="/images/templates-group.png"

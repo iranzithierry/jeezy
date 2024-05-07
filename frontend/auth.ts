@@ -31,19 +31,34 @@ export const { handlers: { GET, POST }, auth } = NextAuth({
             },
             // @ts-ignore
             authorize: async (credentials) => {
-                const response = await fetch("http://127.0.0.1:8000/api/auth/sign-in/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(credentials)
-                })
-                if (!response.ok) return null;
-                const data: AbstractUser = await response.json();
-                if (!data.user) return null;
-                cookies().set({ name: "access.token", value: data.access, maxAge: 8 * 60 * 60, path: "/", httpOnly: true, })
-                cookies().set({ name: "refresh.token", value: data.refresh, maxAge: 5 * 24 * 60 * 60, path: "/", httpOnly: true })
-                return data.user
+                try {
+                    const response = await fetch("http://127.0.0.1:8000/api/auth/sign-in/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(credentials)
+                    })
+                    let tempMessage = null
+                    let responseData = await response.json();
+                    if ("detail" in responseData){
+                        tempMessage = responseData.detail
+                    }
+                    if ("message" in responseData){
+                        tempMessage = responseData.message
+                    }
+                    if (!response.ok) throw new Error(tempMessage)
+                    const data: AbstractUser = responseData
+                    if (!data.user) return null;
+                    cookies().set({ name: "access.token", value: data.access, maxAge: 8 * 60 * 60, path: "/", httpOnly: true, })
+                    cookies().set({ name: "refresh.token", value: data.refresh, maxAge: 5 * 24 * 60 * 60, path: "/", httpOnly: true })
+                    return data.user
+                } catch (error) {
+                    const err: any = error
+                    console.log("ERR", err);
+                    throw new Error(err.message)
+                }
+
             }
         })
     ],

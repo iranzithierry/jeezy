@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { CheckIcon } from '../icons'
+import Image from 'next/image'
 
 export default function Features() {
     return (
@@ -49,7 +50,7 @@ export default function Features() {
                             </Link>
                         </div>
                     </div>
-                    <img
+                    <Image
                         alt="VPS Platform"
                         className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
                         height="310"

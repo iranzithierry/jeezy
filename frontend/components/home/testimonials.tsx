@@ -15,8 +15,8 @@ export default function Testimonials() {
                     <div className="flex flex-col items-start space-y-4">
                         <blockquote className="rounded-md border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
                             <p className="text-gray-500 dark:text-gray-400">
-                                "EY's document management system has been a game-changer for our organization. It has streamlined our
-                                workflows and made collaboration a breeze."
+                                &quot;EY&apos;s document management system has been a game-changer for our organization. It has streamlined our
+                                workflows and made collaboration a breeze.&quot;
                             </p>
                             <div className="mt-4 flex items-center space-x-4">
                                 <Avatar>
@@ -31,8 +31,8 @@ export default function Testimonials() {
                         </blockquote>
                         <blockquote className="rounded-md border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
                             <p className="text-gray-500 dark:text-gray-400">
-                                "I was hesitant to switch to a new document management system, but EY's solution has exceeded all my
-                                expectations. It's intuitive, secure, and has saved us so much time."
+                                &quot;I was hesitant to switch to a new document management system, but EY&apos;s solution has exceeded all my
+                                expectations. It&apos;s intuitive, secure, and has saved us so much time.&quot;
                             </p>
                             <div className="mt-4 flex items-center space-x-4">
                                 <Avatar>

@@ -8,7 +8,7 @@ from .serializers import UserSerializer
 from rest_framework.views import APIView
 from jeezy.secrets.jwt import get_app_jwt
 import requests
-import json
+
 class SelfGetAPIView(generics.GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -39,22 +39,71 @@ class EmailSignUpView(APIView):
             return Response({"message": "Email verification link sent", "success": True},status=status.HTTP_200_OK,)
         return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class SignInView(APIView):
     def post(self, request: Request, *args, **kwargs) -> Response:
-        method = request.GET.get('method', 'email')
+        method = request.GET.get("method", "email")
         form = EmailLoginForm(data=request.data)
-        match method:
-            case "github":
-                form.cleaned_data["password"] = "access_token"
-                pass
-        if form.is_valid():
-            email = form.cleaned_data["email"]
-            user = User.objects.create_user(email=email)
-            token = generate_token()
-            EmailVerification.objects.create(user=user, token=token)
-            send_verification_email.delay(user.email, token)
-            return Response({"message": "Email verification link sent", "success": True},status=status.HTTP_200_OK,)
-        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # I WILL ADD ACCESS_TOKEN ON USER MODEL
+    #     if form.is_valid():
+    #         email = form.cleaned_data.get("email")
+    #         password = form.cleaned_data.get("password")
+    #         user = None
+    #         if method == "github":
+    #             access_token = password
+    #             user_with_this_token = requests.get(
+    #                 "https://api.github.com/user",
+    #                 headers={"Authorization": f"token {access_token}"},
+    #             )
+
+    #             if user_with_this_token.status_code == 200:
+    #                 gh_user = user_with_this_token.json()
+    #             else:
+    #                 return self.respond("Invalid credentials_")
+
+    #             user, created = User.objects.get_or_create(
+    #                 id=gh_user["id"],
+    #                 defaults={
+    #                     "email": gh_user["email"],
+    #                     "name": gh_user["name"],
+    #                     "github_username": gh_user["login"],
+    #                     "password": access_token,
+    #                 },
+    #             )
+    #             user.save()
+
+    #             authorized = user.email == email
+    #         else:
+    #             user = User.objects.filter(email=email).first()
+
+    #             if user is None:
+    #                 return self.respond("Invalid credentials_")
+    #             if not user.email_verified():
+    #                 return self.respond("Verify you email first to login")
+    #             if len(user.password) == 0:
+    #                 return self.respond("Complete signup to login")
+                
+    #             authorized = user.check_password(password)
+                
+
+    #         if not authorized:
+    #             return self.respond("Invalid credentials__")
+
+    #         return Response(
+    #             {
+    #                 "message": "Login successful",
+    #                 "success": True,
+    #                 "user": UserSerializer(user).data,
+    #             },
+    #             status=status.HTTP_200_OK,
+    #         )
+
+    #     return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def respond(self, message = None, success =  False, status = status.HTTP_400_BAD_REQUEST) -> Response:
+    #     return Response({"message": message, "success": success}, status=status)
+
 
 class EmailVerificationView(generics.CreateAPIView):
     def create(self, request: Request, *args, **kwargs) -> Response:

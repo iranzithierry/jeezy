@@ -11,6 +11,8 @@ import { SpinnerIcon } from "../ui/icons"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation";
+import { toast } from "sonner"
+import { error } from "console"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string } { }
 
@@ -23,16 +25,18 @@ export function UserAuthForm({ className, type = "signup", ...props }: UserAuthF
   const onSubmit = async (data: any) => {
     try {
       setIsLoading(true)
-      signIn("credentials", { ...data, redirect: false, callbackUrl: "/dashboard" }).then((response) => {
-        if (response?.error?.endsWith("401")) {
-          setError("credentialsError", { message: "There was a problem with your login" });
-          return;
-        }
-        if (response?.error == null) {
-          window.location.href = "/"
-          return;
-        }
-        setError("credentialsError", { message: response?.error });
+      signIn("credentials", { ...data, redirect: false }).then((response) => {
+        // if ("success" in response.) {
+        //   if (!response.success) {
+        //     toast("There was a problem with your login")
+        //   } else {
+        //     toast("Successfully logged in")
+        //   }
+        //   return;
+        // }
+        // if (response?.error == null) {
+        //   window.location.href = "/dashboard"
+        // }
 
       })
     }
@@ -75,27 +79,29 @@ export function UserAuthForm({ className, type = "signup", ...props }: UserAuthF
           </div>
           {type == "signin" && (
             <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="password">
-              Password
-            </Label>
-            <Input
-              id="password"
-              autoComplete="new-password"
-              disabled={isLoading}
-              {...register('password',
-                {
-                  required: {
-                    value: true,
-                    message: "Password is required"
-                  }
-                })
+              <Label className="sr-only" htmlFor="password">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                autoComplete="new-password"
+                disabled={isLoading}
+                {...register('password',
+                  {
+                    required: {
+                      value: true,
+                      message: "Password is required"
+                    }
+                  })
+                }
+              />
+              {errors.password &&
+                // @ts-ignore
+                <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.password?.message}</span>
               }
-            />
-            {errors.password &&
-              // @ts-ignore
-              <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.password?.message}</span>
-            }
-          </div>
+            </div>
           )}
           <Button disabled={isLoading}>
             {isLoading && (

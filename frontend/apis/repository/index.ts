@@ -53,11 +53,11 @@ const fetcher = async (config: FetcherConfigType) => {
             const data = await response.json();
             return data;
         } catch (error: any) {
-            console.error("FETCH ERROR:", error.message);
+            console.error("FETCH ERROR 1:", error.message);
             return null;
         }
     } catch (error: any) {
-        console.error("FETCH ERROR:", error.message);
+        console.error("FETCH ERROR 2:", error.message);
         return null;
     }
 }

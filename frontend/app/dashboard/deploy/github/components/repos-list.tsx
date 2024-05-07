@@ -7,6 +7,7 @@ import { LinkButton } from '@/components/ui/link-button';
 import { Repo } from '@/types/repos';
 import { timeSince } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import Image from 'next/image';
 
 export default function ReposList({ repos, search }: { repos: Repo[], search: Function }) {
     const [repositories, setRepositories] = useState<Repo[]>(repos);
@@ -31,7 +32,7 @@ export default function ReposList({ repos, search }: { repos: Repo[], search: Fu
         return () => {
             debouncedSearch.cancel();
         };
-    }, [searchQuery]);
+    }, [searchQuery, debouncedSearch]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
@@ -55,7 +56,7 @@ export default function ReposList({ repos, search }: { repos: Repo[], search: Fu
                     {/* @ts-ignore */}
                     {repositories && !searching && repositories?.sort((a, b) => new Date(b.updated_at?.split("T")[0]) - new Date(a.updated_at?.split("T")[0])).map((repo, index) => (
                         <div className="flex items-center gap-4" key={repo.id}>
-                            <img src={'https://api-frameworks.vercel.sh/framework-logos/other.svg'} alt="" className="h-9 w-9" />
+                            <Image src="https://api-frameworks.vercel.sh/framework-logos/other.svg" alt="" className="h-9 w-9" />
                             <div className="grid gap-1">
                                 <p className="text-sm font-medium leading-none shrink">
                                     {repo.name}

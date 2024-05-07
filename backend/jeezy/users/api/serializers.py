@@ -18,17 +18,3 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "name", "email", "image", "password", "email_verified")
-
-
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        refresh = self.get_token(self.user)
-        data["user"] = UserSerializer(self.user).data
-
-        if not data['user']['email_verified']:
-            raise exceptions.AuthenticationFailed(
-                f"please verify you email first",
-                "email_not_verified",
-            )
-        return data

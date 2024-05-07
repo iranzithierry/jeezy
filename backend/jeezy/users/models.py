@@ -29,7 +29,9 @@ class User(AbstractUser):
         return self.email_verified_at is not None
 
     def image(self):
-        if ( str(self.picture) and str(self.picture).startswith("https://") or str(self.picture).startswith("http://") ):
+        if len(str(self.picture)) == 0:
+            return None
+        if (str(self.picture)  and str(self.picture).startswith("https://") or str(self.picture).startswith("http://") ):
             return str(self.picture)
         else:
             return self.picture.url
