@@ -16,7 +16,7 @@ Jeezy is a  hosting platform similar to Vercel, allowing users to deploy their w
 - Wide range of templates
 - Deployment status management
 - Logs
-- Analytics
+- Analytics (Comming Soon)
 - Free hosting
 
 ## Installation
