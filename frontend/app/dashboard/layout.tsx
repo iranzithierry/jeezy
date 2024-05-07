@@ -10,7 +10,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
         <Sidebar />
         <div className="flex flex-col">
           <Suspense fallback="...">
-            <Header/>
+            <Header />
           </Suspense>
           <main className="flex flex-col flex-1 gap-4 p-4 lg:gap-6 lg:p-6">
             {children}

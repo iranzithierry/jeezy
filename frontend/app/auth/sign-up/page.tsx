@@ -11,7 +11,7 @@ export default function AuthenticationPage() {
     return (
         <>
             <div className="absolute top-0 right-0 p-4 z-20">
-                <LinkButton linkTo="/auth/signin" variant={'outline'}>
+                <LinkButton linkTo="/auth/login" variant={'outline'}>
                     Login
                 </LinkButton>
             </div>

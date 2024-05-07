@@ -8,7 +8,7 @@ declare module 'next-auth' {
     interface Session {
         user: {
             /** The user's id. */
-            id: string
+            username: string
         } & DefaultSession['user']
     }
 }
@@ -18,7 +18,12 @@ export const { handlers: { GET, POST }, auth } = NextAuth({
         strategy: "jwt"
     },
     providers: [
-        GitHub,
+        GitHub({
+            authorization: {
+                url: "https://github.com/login/oauth/authorize",
+                params: { scope: "read:user user:email repo" },
+            }
+        }),
         Credentials({
             credentials: {
                 email: { label: "email" },
@@ -44,17 +49,21 @@ export const { handlers: { GET, POST }, auth } = NextAuth({
     ],
     callbacks: {
         jwt: async ({ token, profile, user, account }) => {
+            if (account) {
+                token.accessToken = account.access_token;
+            }
             if (account?.provider == "github") {
                 if (profile) {
                     token.id = profile?.id
                     token.image = profile?.avatar_url
+                    token.username = profile?.login
                 }
             }
             return token
         },
         session: async ({ session, token }) => {
-            if (session?.user && token?.id) {
-                session.user.id = String(token.id)
+            if (session?.user && token?.username) {
+                session.user.username = String(token.username)
             }
             return session
         },

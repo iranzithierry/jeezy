@@ -28,8 +28,22 @@ const nextConfig = {
                 port: '',
                 pathname: '**',
             },
+            {
+                protocol: 'https',
+                hostname: 'api-frameworks.vercel.sh',
+                port: '',
+                pathname: '**',
+            }
         ],
     },
+    async rewrites() {
+        return [
+          {
+            source: '/api/:path*',
+            destination: 'http://127.0.0.1:8000/api/:path*',
+          },
+        ]
+      },
     async redirects() {
         return [
             {

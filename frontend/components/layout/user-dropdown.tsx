@@ -10,7 +10,6 @@ import { Session } from "next-auth";
 export default  function UserDropdown({ session }: { session: Session | null }) {
   const [openPopover, setOpenPopover] = useState(false);
   if(!session?.user) return null
-
   return (
     <div className="relative inline-block text-left">
       <Popover>
@@ -39,7 +38,7 @@ export default  function UserDropdown({ session }: { session: Session | null }) 
         <PopoverTrigger asChild>
           <button onClick={() => setOpenPopover(!openPopover)} className="flex items-center justify-center w-8 h-8 overflow-hidden transition-all duration-75 border border-gray-300 rounded-full focus:outline-none active:scale-95 sm:h-9 sm:w-9">
             {/* @ts-ignore */}
-            <Image alt={session?.user?.email ?? session?.user?.name} src={session?.user?.image || `https://ui-avatars.com/api/?name=${session?.user?.name?.split(" ")?.[0]?.[0]}${session?.user?.name?.split(" ")?.[1]?.[0]}&color=FFFFFF&background=09090b`} width={40} height={40} />
+            <Image alt={session?.user?.email ?? session?.user?.name} priority={true} src={session?.user?.image || `https://ui-avatars.com/api/?name=${session?.user?.name?.split(" ")?.[0]?.[0]}${session?.user?.name?.split(" ")?.[1]?.[0]}&color=FFFFFF&background=09090b`} width={40} height={40} />
           </button>
         </PopoverTrigger>
       </Popover>

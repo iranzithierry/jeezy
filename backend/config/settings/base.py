@@ -49,9 +49,21 @@ STATIC_URL = "static/"
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
+# 'charset': 'utf8mb4',
 DATABASES = {
-    "default": env.db("DATABASE_URL"),
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'jeezy',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': '1234',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        }
+    }
 }
+
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

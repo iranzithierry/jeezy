@@ -4,7 +4,6 @@ import Link from 'next/link'
 import useScroll from '@/lib/hooks/use-scroll';
 import Logo from '../logo';
 import { LinkButton } from '../ui/link-button';
-import UserOrLogin from './user-or-login';
 
 export default function Header() {
     const scrolled = useScroll(50);
@@ -36,7 +35,7 @@ export default function Header() {
                     </Link>
                 </div>
                 <div>
-                <LinkButton linkTo='/auth/signin'>
+                <LinkButton linkTo='/auth/login'>
                         Sign In
                     </LinkButton>
                 </div>

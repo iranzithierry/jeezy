@@ -23,13 +23,13 @@ export function UserAuthForm({ className, type = "signup", ...props }: UserAuthF
   const onSubmit = async (data: any) => {
     try {
       setIsLoading(true)
-      signIn("credentials", { ...data, redirect: false, callbackUrl: "/" }).then((response) => {
+      signIn("credentials", { ...data, redirect: false, callbackUrl: "/dashboard" }).then((response) => {
         if (response?.error?.endsWith("401")) {
           setError("credentialsError", { message: "There was a problem with your login" });
           return;
         }
         if (response?.error == null) {
-          window.location.href = "/dashboard"
+          window.location.href = "/"
           return;
         }
         setError("credentialsError", { message: response?.error });
