@@ -1,17 +1,3 @@
-export interface AbstractUser {
-    refresh: string;
-    access:  string;
-    user:    User;
-}
-
-export interface User {
-    id:             number;
-    name:           string  | null;
-    email:          string;
-    image:          string  | null;
-    email_verified: boolean | null;
-}
-
 export interface SessionUser { 
     id:             number;
     name:           string  | null;
@@ -21,4 +7,26 @@ export interface SessionUser {
         refreshToken:    string;
         accessToken:     string;
     }
+}
+export interface LoginResponse {
+    message: string;
+    success: boolean;
+    user:    User;
+    tokens:  Tokens;
+}
+export interface Tokens {
+    refresh: string;
+    access:  string;
+}
+export interface User {
+    id:             number;
+    name:           string  | null;
+    email:          string;
+    image:          string  | null;
+    email_verified: boolean | null;
+}
+
+export interface BaseResponse {
+    message: string;
+    success: boolean;
 }

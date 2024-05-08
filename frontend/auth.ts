@@ -1,7 +1,7 @@
 import NextAuth, { type DefaultSession } from 'next-auth'
 import GitHub from 'next-auth/providers/github'
 import Credentials from "next-auth/providers/credentials"
-import { AbstractUser } from './types';
+import { LoginResponse } from './types';
 import { cookies } from 'next/headers';
 
 declare module 'next-auth' {
@@ -13,7 +13,7 @@ declare module 'next-auth' {
     }
 }
 
-export const { handlers: { GET, POST }, auth } = NextAuth({
+export const { handlers: { GET, POST }, auth, signIn } = NextAuth({
     session: {
         strategy: "jwt"
     },
@@ -25,40 +25,19 @@ export const { handlers: { GET, POST }, auth } = NextAuth({
             }
         }),
         Credentials({
-            credentials: {
-                email: { label: "email" },
-                password: { label: "Password", type: "password" }
-            },
+            credentials: {},
             // @ts-ignore
-            authorize: async (credentials) => {
+            authorize: async (credentials, request) => {
+                const requestJson = await request.json()
+                const data: LoginResponse = JSON.parse(requestJson.stringifiedResponse)
                 try {
-                    const response = await fetch("http://127.0.0.1:8000/api/auth/sign-in/", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(credentials)
-                    })
-                    let tempMessage = null
-                    let responseData = await response.json();
-                    if ("detail" in responseData){
-                        tempMessage = responseData.detail
-                    }
-                    if ("message" in responseData){
-                        tempMessage = responseData.message
-                    }
-                    if (!response.ok) throw new Error(tempMessage)
-                    const data: AbstractUser = responseData
-                    if (!data.user) return null;
-                    cookies().set({ name: "access.token", value: data.access, maxAge: 8 * 60 * 60, path: "/", httpOnly: true, })
-                    cookies().set({ name: "refresh.token", value: data.refresh, maxAge: 5 * 24 * 60 * 60, path: "/", httpOnly: true })
-                    return data.user
+                    cookies().set({ name: "access.token", value: data.tokens.access, maxAge: 8 * 60 * 60, path: "/", httpOnly: true, })
+                    cookies().set({ name: "refresh.token", value: data.tokens.refresh, maxAge: 5 * 24 * 60 * 60, path: "/", httpOnly: true })
                 } catch (error) {
                     const err: any = error
-                    console.log("ERR", err);
                     throw new Error(err.message)
                 }
-
+                return data.user
             }
         })
     ],
@@ -69,6 +48,19 @@ export const { handlers: { GET, POST }, auth } = NextAuth({
             }
             if (account?.provider == "github") {
                 if (profile) {
+                    const data = {"email": profile.email, "access_token": account.access_token}
+                    const response = await fetch("http://127.0.0.1:8000/api/auth/github/authenticate/", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    const responseData: LoginResponse = await response.json();
+                    if (responseData.success) {
+                        cookies().set({ name: "access.token", value: responseData.tokens.access, maxAge: 8 * 60 * 60, path: "/", httpOnly: true, })
+                        cookies().set({ name: "refresh.token", value: responseData.tokens.refresh, maxAge: 5 * 24 * 60 * 60, path: "/", httpOnly: true })
+                    }
                     token.id = profile?.id
                     token.image = profile?.avatar_url
                     token.username = profile?.login

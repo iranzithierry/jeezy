@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
 import { GithubIcon } from "@/components/icons"
 import { Button } from "@/components/ui/button"
@@ -10,43 +9,35 @@ import { Label } from "@/components/ui/label"
 import { SpinnerIcon } from "../ui/icons"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
-import { useRouter } from "next/navigation";
 import { toast } from "sonner"
-import { error } from "console"
+import { login, sign_up } from "@/apis/auth"
+import { useRouter } from "next/navigation"
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string } { }
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean } { }
 
-export function UserAuthForm({ className, type = "signup", ...props }: UserAuthFormProps) {
+export function UserAuthForm({ className, type = "signup", withGithub = true, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const { register, handleSubmit, formState: { errors }, setError } = useForm();
-  const onError = (error: any) => console.log(error);
-
-  // const router = useRouter()
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const router = useRouter()
   const onSubmit = async (data: any) => {
-    try {
-      setIsLoading(true)
-      signIn("credentials", { ...data, redirect: false }).then((response) => {
-        // if ("success" in response.) {
-        //   if (!response.success) {
-        //     toast("There was a problem with your login")
-        //   } else {
-        //     toast("Successfully logged in")
-        //   }
-        //   return;
-        // }
-        // if (response?.error == null) {
-        //   window.location.href = "/dashboard"
-        // }
-
-      })
+    setIsLoading(true)
+    let auth_function = type === "signup" ? sign_up : login
+    const response: { error: boolean, message: string } | any = await auth_function(data)
+    if (response.error) {
+      toast.error(response.message)
+    } else {
+      if (response.message == "Email verification link sent") {
+        toast.success(response.message)
+        router.push("/auth/email-verification-sent")
+      }
+      toast.success(response.message)
     }
-    catch (error: any) { console.error(error.message) }
-    finally { setIsLoading(false) }
+    setIsLoading(false)
   }
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={handleSubmit(onSubmit, onError)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -77,7 +68,34 @@ export function UserAuthForm({ className, type = "signup", ...props }: UserAuthF
               <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.email?.message}</span>
             }
           </div>
-          {type == "signin" && (
+          {type == "complete" && (
+            <div className="grid gap-1">
+            <Label className="sr-only" htmlFor="name">
+            Name
+            </Label>
+            <Input
+              id="name"
+              placeholder="John Doe"
+              autoCapitalize="none"
+              autoComplete="name"
+              autoCorrect="off"
+              disabled={isLoading}
+              {...register('name',
+                {
+                  required: {
+                    value: true,
+                    message: "Name is required"
+                  },
+                })
+              }
+            />
+            {errors.name &&
+              // @ts-ignore
+              <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.name?.message}</span>
+            }
+          </div>
+          )}
+          {type == "signin" || type == "complete" && (
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="password">
                 Password
@@ -111,24 +129,28 @@ export function UserAuthForm({ className, type = "signup", ...props }: UserAuthF
           </Button>
         </div>
       </form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-      <Button variant="outline" type="button" disabled={isLoading} onClick={() => signIn('github')}>
-        {isLoading ? (
-          <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <GithubIcon className="mr-2 h-4 w-4" />
-        )}{" "}
-        GitHub
-      </Button>
+      {withGithub && (
+        <>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          <Button variant="outline" type="button" disabled={isLoading} onClick={() => signIn('github')}>
+            {isLoading ? (
+              <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <GithubIcon className="mr-2 h-4 w-4" />
+            )}{" "}
+            GitHub
+          </Button>
+          </>
+      )}
     </div>
   )
 }
