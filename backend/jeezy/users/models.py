@@ -11,14 +11,15 @@ class User(AbstractUser):
     picture = models.ImageField(_("image"), blank=True, upload_to="user/images", null=True)
     email_verified_at = models.DateTimeField(_("email verified at"), null=True, blank=True)
     sign_up_method = models.CharField(_("login method used"), blank=True, max_length=255, null=True, default="email")
-    github_installaton_id = models.CharField(_("github installaton_id"), blank=True, max_length=255, null=True)
-    github_username = models.CharField(_("github username"), blank=True, max_length=255, null=True)
+    username = models.CharField(blank=True, max_length=255, null=True, unique=True)
+    github_installaton_id = models.CharField(_("github installaton_id"), blank=True, max_length=255, null=True, unique=True)
+    github_access_token = models.CharField(_("github access token"), blank=True, max_length=255, null=True, unique=True)
+    github_id = models.CharField(_("github id"), blank=True, max_length=255, null=True, unique=True)
     USERNAME_FIELD = "email"
 
     REQUIRED_FIELDS = []
     first_name = None   # type: ignore[assignment]
     last_name = None    # type: ignore[assignment]
-    username = None     # type: ignore[assignment]
 
     objects: ClassVar[UserManager] = UserManager()
 

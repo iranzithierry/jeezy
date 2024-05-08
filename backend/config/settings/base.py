@@ -307,6 +307,5 @@ SPECTACULAR_SETTINGS = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=8),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
-    "TOKEN_OBTAIN_SERIALIZER": "jeezy.users.api.serializers.MyTokenObtainPairSerializer",
 }
 APPEND_SLASH = True

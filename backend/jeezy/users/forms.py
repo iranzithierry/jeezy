@@ -5,17 +5,33 @@ class EmailSignUpForm(forms.Form):
     email = forms.EmailField()
 
     def clean_email(self):
-        email = self.cleaned_data.get('email', '')
-        if User.objects.filter(email=email.lower()).exists():
+        # token=iw1L6EFGCCxAHFumY86zJx3SPZUkLdkfr5MVyEHpla4egcg0H0mW
+        email: str = self.cleaned_data.get('email', '')
+        try:
+            user = User.objects.get(email=email)
+            if not user.email_verified():
+                raise forms.ValidationError("Registered but pending email verification")
             raise forms.ValidationError("User with this email already registered")
-        return email.lower()
+        except User.DoesNotExist:
+            return email 
 
 class CompleteSignUpForm(forms.Form):
     email = forms.EmailField()
     name = forms.CharField(max_length=100)
     password = forms.CharField(widget=forms.PasswordInput)
-    github_username =forms.CharField(max_length=200, required=False)
+    username =forms.CharField(max_length=200, required=False)
 
 class EmailLoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
+
+class GithubSignInForm(forms.Form):
+    email = forms.EmailField()
+    access_token = forms.CharField(max_length=200)
+
+class GithubSignUpForm(forms.Form):
+    id = forms.IntegerField()
+    name = forms.CharField(max_length=200)
+    email = forms.EmailField()
+    access_token = forms.CharField(max_length=200)
+    image = forms.URLField()
