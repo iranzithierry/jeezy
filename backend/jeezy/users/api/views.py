@@ -53,40 +53,31 @@ class SignInView(APIView):
 
 class EmailVerificationView(generics.CreateAPIView):
     def create(self, request: Request, *args, **kwargs) -> Response:
+        form = CompleteSignUpForm(data=request.data)
         token = request.data.get("token")
         if not token:
             return Response({"message": "No token provided", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            verification = EmailVerification.objects.get(token=token)
-            if  not verification.verified():
-                verification.user.set_email_verified()
-                verification.user.save()
-                verification.set_verified()
-                verification.save()
-            else:
-                return Response({"message": "This email is already verified", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({"message": verification.user.email, "success": True}, status=status.HTTP_200_OK)
-        except EmailVerification.DoesNotExist:
-            return Response({"message": "Invalid token", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-
-class CompleteSignUpView(generics.CreateAPIView):
-    def create(self, request: Request, *args, **kwargs) -> Response:
-        form = CompleteSignUpForm(data=request.data)
         if form.is_valid():
             try:
-                user = User.objects.get(email=form.cleaned_data["email"])
-                if user.is_active:
-                    return Response({"message": "User already completed signup", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-                if user.email_verified():
-                    user.set_password(form.cleaned_data["password"])
-                    user.name = form.cleaned_data.get("name", None)
-                    user.is_active = True
-                    user.save()
-                    return Response({"message": "Sign up successful", "success": True, "user": UserSerializer(user).data, "tokens": get_tokens_for_user(user),  },  status=status.HTTP_201_CREATED )
-                else:
-                    return Response({"message": "Verify your email first to continue", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-            except User.DoesNotExist:
-                return Response({"message": "No user with this email found", "success": False}, status=status.HTTP_400_BAD_REQUEST )
+                verification = EmailVerification.objects.get(token=token)
+                user = verification.user
+            except EmailVerification.DoesNotExist:
+                return Response({"message": "Invalid token", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+            if  not verification.verified():
+                # email verification doer
+                user.set_password(form.cleaned_data.get("password"))
+                user.name = form.cleaned_data.get("name", None)
+                user.username = form.cleaned_data.get("username", None)
+                user.is_active = True
+                user.set_email_verified()
+                user.save()
+                # email verification model
+                verification.set_verified()
+                verification.save()
+                # 
+                return Response({"message": "Sign up successful no you can login", "success": True, "user": UserSerializer(user).data, "tokens": get_tokens_for_user(user),  },  status=status.HTTP_201_CREATED )
+            else:
+                return Response({"message": "You have already verified your email", "success": False}, status=status.HTTP_400_BAD_REQUEST)
         return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MeAPIView(generics.GenericAPIView):

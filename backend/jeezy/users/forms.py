@@ -16,9 +16,8 @@ class EmailSignUpForm(forms.Form):
             return email 
 
 class CompleteSignUpForm(forms.Form):
-    email = forms.EmailField()
     name = forms.CharField(max_length=100)
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput, min_length=6, error_messages={"min_length": "Password must be atleast 6 chars"})
     username =forms.CharField(max_length=200, required=False)
 
 class EmailLoginForm(forms.Form):

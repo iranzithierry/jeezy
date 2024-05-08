@@ -7,7 +7,6 @@ import { cookies } from 'next/headers';
 declare module 'next-auth' {
     interface Session {
         user: {
-            /** The user's id. */
             username: string
         } & DefaultSession['user']
     }

@@ -2,7 +2,7 @@ const credantials = [
   {
     jwt: {
       name: 'IRANZI Thierry',
-      email: 'username@gmail.com',
+      email: 'email',
       picture: null,
       sub: '27'
     },
@@ -10,7 +10,7 @@ const credantials = [
     user: {
       id: 27,
       name: 'Name',
-      email: 'username@gmail.com',
+      email: 'email',
       image: null,
       email_verified: true
     },
@@ -24,7 +24,7 @@ const github = [
   {
     jwt: {
       name: 'Name',
-      email: 'username@gmail.com',
+      email: 'email',
       picture: 'https://avatars.githubusercontent.com/u/115815954?v=4',
       sub: '115815954'
     },
@@ -51,7 +51,7 @@ const github = [
       company: 'Chief Executive Officer at eBuzzie.com',
       blog: '',
       location: 'Kigali, Rwanda',
-      email: 'username@gmail.com',
+      email: 'email',
       hireable: true,
       bio: 'Backend Developer 🚀Django,  Laravel, Next.JS, React,  React Native  🌍 Rwanda',
       twitter_username: null,
@@ -77,7 +77,7 @@ const github = [
     user: {
       id: '115815954',
       name: 'Name',
-      email: 'username@gmail.com',
+      email: 'email',
       image: 'https://avatars.githubusercontent.com/u/115815954?v=4'
     },
     account: {

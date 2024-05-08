@@ -10,19 +10,24 @@ import { SpinnerIcon } from "../ui/icons"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { login, sign_up } from "@/apis/auth"
+import { login, sign_up, verify_email } from "@/apis/auth"
 import { useRouter } from "next/navigation"
+import { Type } from "lucide-react"
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean } { }
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean, extraData?: { token: string; email: string } } { }
 
-export function UserAuthForm({ className, type = "signup", withGithub = true, ...props }: UserAuthFormProps) {
+export function UserAuthForm({ className, type = "signup", withGithub = true, extraData, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const { register, handleSubmit, formState: { errors } } = useForm();
   const router = useRouter()
   const onSubmit = async (data: any) => {
     setIsLoading(true)
-    let auth_function = type === "signup" ? sign_up : login
-    const response: { error: boolean, message: string } | any = await auth_function(data)
+    let auth_function = type === "signup" ? sign_up : type === "verify_email" ? verify_email : login;
+    let mergedData = {
+        ...data,
+        ...extraData
+    }
+    const response: { error: boolean, message: string } | any = await auth_function(mergedData)
     if (response.error) {
       toast.error(response.message)
     } else {
@@ -34,7 +39,7 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ..
     }
     setIsLoading(false)
   }
-
+  
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -45,12 +50,14 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ..
             </Label>
             <Input
               id="email"
-              placeholder="username@gmail.com"
+              placeholder="email"
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading}
-              {...register('email',
+              value={extraData?.email}
+              disabled={extraData?.email ? true : isLoading}
+              {...type !== "verify_email" && (
+                {...register('email',
                 {
                   required: {
                     value: true,
@@ -62,13 +69,15 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ..
                   }
                 })
               }
+              )}
+
             />
             {errors.email &&
               // @ts-ignore
               <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.email?.message}</span>
             }
           </div>
-          {type == "complete" && (
+          {type == "verify_email" && (
             <div className="grid gap-1">
             <Label className="sr-only" htmlFor="name">
             Name
@@ -95,7 +104,7 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ..
             }
           </div>
           )}
-          {type == "signin" || type == "complete" && (
+          {(type == "signin" || type == "verify_email") && (
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="password">
                 Password
@@ -125,7 +134,7 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ..
             {isLoading && (
               <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
             )}
-            {type[0].toUpperCase() + type.slice(1)} with Email
+            {type == "verify_email" ? "Continue Sign Up" : type == "signin" ? "Sign In" : "Sign Up"}
           </Button>
         </div>
       </form>

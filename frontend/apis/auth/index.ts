@@ -11,12 +11,16 @@ export async function login(data: any) {
         method: "post"
     }
     const response: LoginResponse = await fetcher(fetcherConfig)
-    if (!response.success) {
-        return { "error": true, "message": response.message }
+    if ("success" in response) {
+        if (!response.success) {
+            return { "error": true, "message": response.message }
+        } else {
+            let stringifiedResponse = JSON.stringify(response)
+            signIn("credentials", { stringifiedResponse, redirect: false })
+            return { "error": false, "message": response.message }
+        }
     } else {
-        let stringifiedResponse = JSON.stringify(response)
-        signIn("credentials", { stringifiedResponse, redirect: false })
-        return { "error": false, "message": response.message }
+        return { "error": true, "message": extractErrorValues(response) }
     }
 }
 export async function sign_up(data: any) {
@@ -33,9 +37,30 @@ export async function sign_up(data: any) {
             return { "error": false, "message": response.message }
         }
     } else {
-        return { "error": true, "message": extractErrorValues(response)[0] }
+        return { "error": true, "message": extractErrorValues(response) }
     }
 }
+
+export async function verify_email(data: any) {
+    const fetcherConfig = {
+        url: "http:127.0.0.1:8000/api/auth/verify_email/",
+        body: JSON.stringify(data),
+        method: "post"
+    }
+    const response: BaseResponse = await fetcher(fetcherConfig)
+    if ("success" in response) {
+        if (!response.success) {
+            return { "error": true, "message": response.message }
+        } else {
+            return { "error": false, "message": response.message }
+        }
+    } else {
+        console.log(extractErrorValues(response));
+        
+        return { "error": true, "message": extractErrorValues(response) }
+    }
+}
+
 type FetcherConfigType = { url: string; token?: string; method?: string; body?: any; };
 
 const fetcher = async (config: FetcherConfigType) => {

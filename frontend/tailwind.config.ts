@@ -82,6 +82,8 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"), 
+    // require('@tailwindcss/forms'),
+    require('autoprefixer'),
     require('@tailwindcss/typography')],
 } satisfies Config
 

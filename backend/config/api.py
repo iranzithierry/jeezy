@@ -3,7 +3,7 @@ from django.urls import re_path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
-from jeezy.users.api.views import  MeAPIView, CompleteSignUpView, EmailVerificationView, EmailSignUpView, SignInView
+from jeezy.users.api.views import  MeAPIView, EmailVerificationView, EmailSignUpView, SignInView
 from jeezy.users.api.oauth import GithubInstallationView, GithubAuthenticateView
 urlpatterns = [
     re_path(r"^auth/token/refresh/?", TokenRefreshView.as_view()),
@@ -11,7 +11,6 @@ urlpatterns = [
     # Email Auth
     re_path(r"^auth/register/?", EmailSignUpView.as_view(), name='sign_up_view'),
     re_path(r"^auth/verify_email/?", EmailVerificationView.as_view(), name='email_verification'),
-    re_path(r"^auth/complete_registration/?", CompleteSignUpView.as_view(), name='complete_sign_up'),
     re_path(r"^auth/login/?", SignInView.as_view(), name='sign_in_view'),
 
     # Github Oauth
