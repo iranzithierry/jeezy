@@ -4,10 +4,11 @@ import { getSession } from "@/lib/sessions";
 import { SearchRepoResponse } from "@/types/repos";
 import { cookies } from "next/headers";
 
-export async function all(ghToken: string) {
+export async function all() {
+    "use server";
     const fetcherConfig = {
         url: "all_by_languages" as UrlType,
-        token: ghToken,
+        token: cookies().get('__gh.pvte.access_token')?.value,
     }
     const data: SearchRepoResponse = await fetcher(fetcherConfig)
     if (data) return data?.items

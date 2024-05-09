@@ -14,8 +14,6 @@ export default function ReposList({ repos, search }: { repos: Repo[], search: Fu
     const [searching, setSearching] = useState<boolean>(false);
 
     const handleSearch = async (query: string) => {
-        console.log("handleSearch");
-        
         setSearching(true);
         if (query.length > 1) {
             const items = await search(query);
@@ -26,8 +24,6 @@ export default function ReposList({ repos, search }: { repos: Repo[], search: Fu
         setSearching(false);
     };
     const handleChange = (value: string) => {
-        console.log("handleChange");
-        
         handleTextDebounce(value);
     };
     const handleTextDebounce = useCallback(debounce(handleSearch, 860), []);
