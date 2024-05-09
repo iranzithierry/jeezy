@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean, extraData?: { token: string; email: string } } { }
 
-export function UserAuthForm({ className, type = "signup", withGithub = true, extraData, ...props }: UserAuthFormProps) {
+export function Form({ className, type = "signup", withGithub = true, extraData, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const { register, handleSubmit, formState: { errors } } = useForm();
   const router = useRouter()
@@ -38,6 +38,7 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ex
     }
     setIsLoading(false)
   }
+  const isError = (value: any | null) =>  value ? true : false
   
   return (
     <div className={cn("grid gap-6", className)} {...props}>
@@ -48,6 +49,7 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ex
               Email
             </Label>
             <Input
+              invalid={isError(errors.email?.message)}
               id="email"
               placeholder="email"
               autoCapitalize="none"
@@ -82,6 +84,7 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ex
             Name
             </Label>
             <Input
+              invalid={isError(errors.name?.message)}
               id="name"
               placeholder="John Doe"
               autoCapitalize="none"
@@ -109,6 +112,7 @@ export function UserAuthForm({ className, type = "signup", withGithub = true, ex
                 Password
               </Label>
               <Input
+                invalid={isError(errors.password?.message)}
                 id="password"
                 type="password"
                 placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"

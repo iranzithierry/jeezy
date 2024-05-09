@@ -11,7 +11,6 @@ const iconComponents = {
     Paperclip: <Paperclip />,
     PlaneIcon: <PlaneIcon />,
     GridIcon: <GridIcon />,
-    Blocks: <Blocks/>,
     Settings: <Settings />,
 };
 
@@ -39,13 +38,6 @@ export default function Nav() {
             badgeCount: 1,
             pathName: '/dashboard/projects',
             isCurrent: '/dashboard/projects' == currentPathName,
-        },
-        {
-            title: 'Templates',
-            iconName: 'Blocks',
-            badgeCount: 6,
-            pathName: '/dashboard/templates',
-            isCurrent: '/dashboard/templates' == currentPathName,
         },
         {
             title: 'Logs',

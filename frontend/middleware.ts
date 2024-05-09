@@ -14,7 +14,6 @@ export async function middleware(request: NextRequest) {
     if (isProtectedRoute && !session?.user) {
         return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
     }
-
     if ( isPublicRoute && session?.user && !request.nextUrl.pathname.startsWith('/dashboard')) {
         return NextResponse.redirect(new URL('/dashboard', request.nextUrl))
     }

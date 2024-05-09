@@ -1,25 +1,25 @@
 "use client";
+import { toast } from 'sonner';
 import authAxios from '@/apis/axios';
-import { LinkButton } from '@/components/ui/link-button';
-import { createSession } from '@/lib/actions/server/sessions';
 import { setCookie } from '@/lib/cookies';
 import { useSearchParams } from 'next/navigation';
+import BACKEND_URL from '@/constants/backend-urls';
 import React, { useEffect, useCallback } from 'react';
-import { toast } from 'sonner';
+import { LinkButton } from '@/components/ui/link-button';
+import { createSession } from '@/lib/server-actions/sessions';
+import COOKIE_NAMES from '@/constants/cookies-names';
 
 export default function Page() {
     const params = useSearchParams();
-
     const getGitHubToken = useCallback(async (installationId: string | undefined) => {
         if (installationId && installationId.length !== 0) {
             try {
                 const body = { "installation_id": installationId };
-                const { data } = await (await authAxios()).post("/backend-api/auth/github/installation", JSON.stringify(body));
+                const { data } = await (await authAxios()).post(`/backend-api/${BACKEND_URL.GITHUB_INSTALLATION}`, JSON.stringify(body));
                 if ("success" in data && data.success) {
                     toast.success("Done now you can close this pop up");
-                    setCookie('__gh.pvte.access_token', data.message, {maxAge: 60 * 60, path: "/", httpOnly: true})
+                    setCookie(COOKIE_NAMES.ACCESS_TOKEN, data.message, {maxAge: COOKIE_TIME.ACCESS_TOKEN, path: "/", httpOnly: true})
                     createSession({user: data.user})
-                    // window.close()
                 }
                 if ("success" in data && !data.success) {
                     toast.error(data.message);
@@ -33,7 +33,7 @@ export default function Page() {
     useEffect(() => {
         const installationId = params.getAll("installation_id")[0];
         getGitHubToken(installationId);
-    }, [params, getGitHubToken]);
+    }, [params]);
 
     return (
         <div className="container relative h-screen flex items-center justify-center">

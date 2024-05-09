@@ -10,7 +10,7 @@ export default function Subscribe() {
                 <div className="space-y-3">
                     <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Ready to Get Started?</h2>
                     <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                        Sign up for our VPS platform and start deploying your apps today.
+                        Sign up for our Jeezy and start deploying your apps today.
                     </p>
                 </div>
                 <div className="mx-auto w-full max-w-sm space-y-2">

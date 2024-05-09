@@ -1,6 +1,5 @@
 import { Metadata } from "next"
-
-import { UserAuthForm } from "@/components/auth/user-auth-form"
+import { Form } from "@/components/auth/form"
 import { LinkButton } from "@/components/ui/link-button"
 
 export const metadata: Metadata = {
@@ -26,7 +25,7 @@ export default function AuthenticationPage() {
                                 Enter your email below to login  your account
                             </p>
                         </div>
-                        <UserAuthForm type="signin" />
+                        <Form type="signin" />
                     </div>
                 </div>
             </div>

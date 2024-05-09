@@ -1,9 +1,9 @@
 "use client";
-import { UserAuthForm } from "@/components/auth/user-auth-form"
 import { useSearchParams } from "next/navigation"
 import { toast } from "sonner";
 import React, { useState, useEffect } from "react";
-import AuthLoadingSkeleton from "@/components/auth/auth-loading-skeleton";
+import { Form } from "@/components/auth/form";
+import FormSkeleton from "@/components/auth/form-skeleton";
 
 export default function EmailVerificationPage() {
     const params = useSearchParams();
@@ -18,14 +18,13 @@ export default function EmailVerificationPage() {
         }
         if (!verification_email) {
             toast.error("Something went wrong. Please try again or resend the email verification link")
-            setErrorInToken("Something went wrong. Please try again or resend the email verification link");
+            setErrorInToken("Try again or resend the email verification link");
         }
         if (!verification_email.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)){
             toast.error("Invalid email address")
             setErrorInToken("You are using link with invalid email address");
         }
-        // Set errorInToken based on conditions
-    }, [params]);
+    }, [params, verification_token, verification_email]);
 
     const extra_data = { "token": verification_token, "email": verification_email }
 
@@ -40,8 +39,8 @@ export default function EmailVerificationPage() {
                             registration form.
                         </p>
                     </div>
-                    <React.Suspense fallback={<AuthLoadingSkeleton />}>
-                        <UserAuthForm type="verify_email" withGithub={false} extraData={extra_data} />
+                    <React.Suspense fallback={<FormSkeleton />}>
+                        <Form type="verify_email" withGithub={false} extraData={extra_data} />
                     </React.Suspense>
                 </>
             ): (

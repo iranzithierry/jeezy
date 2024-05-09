@@ -1,8 +1,8 @@
-import { Metadata } from "next"
 import Link from "next/link"
-
-import { UserAuthForm } from "@/components/auth/user-auth-form"
+import { Metadata } from "next"
+import { Form } from "@/components/auth/form"
 import { LinkButton } from "@/components/ui/link-button"
+
 export const metadata: Metadata = {
     title: "Sign up",
 }
@@ -26,20 +26,14 @@ export default function AuthenticationPage() {
                                 Enter your email below to create your account
                             </p>
                         </div>
-                        <UserAuthForm />
+                        <Form />
                         <p className="px-8 text-center text-sm text-muted-foreground">
                             By clicking continue, you agree to our{" "}
-                            <Link
-                                href="/terms"
-                                className="underline underline-offset-4 hover:text-primary"
-                            >
+                            <Link href="/terms" className="underline underline-offset-4 hover:text-primary" >
                                 Terms of Service
-                            </Link>{" "}
-                            and{" "}
-                            <Link
-                                href="/privacy"
-                                className="underline underline-offset-4 hover:text-primary"
-                            >
+                            </Link>
+                            {" "}and{" "}
+                            <Link href="/privacy" className="underline underline-offset-4 hover:text-primary" >
                                 Privacy Policy
                             </Link>
                             .

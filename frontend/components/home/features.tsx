@@ -14,25 +14,24 @@ export default function Features() {
                                 Key Features
                             </div>
                             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                                Powerful VPS Hosting for Your Apps
+                                Friendly user interface to ship your app easily
                             </h2>
                             <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                                Deploy your apps with ease, customize your servers, and manage your infrastructure with our robust
-                                VPS platform.
+                               Create an account then connect your github that's it
                             </p>
                         </div>
                         <ul className="grid gap-2 py-4">
                             <li>
                                 <CheckIcon className="mr-2 inline-block h-4 w-4" />
-                                Deploy apps by specifying SSH credentials
+                                Only Github Repository whether private or public
                             </li>
                             <li>
                                 <CheckIcon className="mr-2 inline-block h-4 w-4" />
-                                Modify web servers, databases, firewalls, and more
+                                No need to upload your files we handle it for you
                             </li>
                             <li>
                                 <CheckIcon className="mr-2 inline-block h-4 w-4" />
-                                Scalable infrastructure to handle your growing needs
+                                Manage deployments progress and projects
                             </li>
                         </ul>
                         <div className="flex flex-col gap-2 min-[400px]:flex-row">

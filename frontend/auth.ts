@@ -3,6 +3,8 @@ import GitHub from 'next-auth/providers/github'
 import { LoginResponse } from './types';
 import { cookies } from 'next/headers';
 import { createSession } from './lib/sessions';
+import BACKEND_URLS from './constants/backend-urls';
+import COOKIE_NAMES from './constants/cookies-names';
 
 export const { handlers: { GET, POST }, auth, signIn } = NextAuth({
     session: {
@@ -14,7 +16,7 @@ export const { handlers: { GET, POST }, auth, signIn } = NextAuth({
             if (account?.provider == "github") {
                 if (profile) {
                     const data = {"email": profile.email, "access_token": account.access_token}
-                    const response = await fetch("http://127.0.0.1:8000/api/auth/github/authenticate/", {
+                    const response = await fetch(`backend-api/${BACKEND_URLS.GITHUB_AUTHENTICATE}`, {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json"
@@ -23,8 +25,8 @@ export const { handlers: { GET, POST }, auth, signIn } = NextAuth({
                     });
                     const responseData: LoginResponse = await response.json();
                     if (responseData.success) {
-                        cookies().set({ name: "access.token", value: responseData.tokens.access, maxAge: 8 * 60 * 60, path: "/", httpOnly: true, })
-                        cookies().set({ name: "refresh.token", value: responseData.tokens.refresh, maxAge: 5 * 24 * 60 * 60, path: "/", httpOnly: true })
+                        cookies().set({ name: COOKIE_NAMES.ACCESS_TOKEN, value: responseData.tokens.access, maxAge: COOKIE_TIME.ACCESS_TOKEN, path: "/", httpOnly: true, })
+                        cookies().set({ name: COOKIE_NAMES.REFRESH_TOKEN, value: responseData.tokens.refresh, maxAge: COOKIE_TIME.REFRESH_TOKEN, path: "/", httpOnly: true })
                         createSession({user: responseData.user})
                     }
                 }

@@ -5,6 +5,7 @@ import { createSession } from "@/lib/sessions";
 import { cookies } from "next/headers";
 import { deleteCookie, setCookie } from "@/lib/cookies";
 import authAxios from "../axios";
+import COOKIE_NAMES from "@/constants/cookies-names";
 
 export async function login(data: any) {
     const fetcherConfig = {
@@ -41,10 +42,10 @@ export async function sign_up(data: any) {
         return { "error": true, "message": extractErrorValues(response) }
     }
 }
-export async function get_new_pvt_access_token() {
+export async function new_github_access_token() {
     const { data } = await (await authAxios()).post("http://127.0.0.1:8000/api/auth/github/access_token");
     if ("success" in data && data.success) {
-        setCookie("__gh.pvte.access_token", data.message, { maxAge: 60*60, path: "/"})
+        setCookie(COOKIE_NAMES.GITHUB_PRIVATE_ACCESS_TOKEN, data.message, { maxAge: 60*60, path: "/"})
         return data.message as string
     } else {
         return ''
@@ -53,7 +54,7 @@ export async function get_new_pvt_access_token() {
 
 export async function verify_email(data: any) {
     const fetcherConfig = {
-        url: "http://127.0.0.1:8000/api/auth/verify_email/",
+        url: "backend-api/auth/verify_email/",
         body: JSON.stringify(data),
         method: "post"
     }

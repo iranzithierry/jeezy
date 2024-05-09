@@ -1,13 +1,3 @@
-export interface SessionUser { 
-    id:             number;
-    name:           string  | null;
-    email:          string;
-    image:          string  | null;
-    tokens: {
-        refreshToken:    string;
-        accessToken:     string;
-    }
-}
 export interface LoginResponse {
     message: string;
     success: boolean;
@@ -19,12 +9,13 @@ export interface Tokens {
     access:  string;
 }
 export interface User {
-    id:             number;
-    username:       string  | null;
-    name:           string  | null;
-    email:          string;
-    image:          string  | null;
-    email_verified: boolean | null;
+    id:                 number;
+    username:           string  | null;
+    name:               string  | null;
+    email:              string;
+    image:              string  | null;
+    email_verified:     boolean | null;
+    installed_github:   boolean | null
 }
 
 export interface BaseResponse {

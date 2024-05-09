@@ -11,7 +11,7 @@ export default function Intro() {
                             Unleash Your Apps with Jeezy
                         </h1>
                         <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                            Deploy your apps with ease, customize your servers, and manage your infrastructure with us.
+                            Deploy your Vite apps and HTML For free.
                         </p>
                     </div>
                     <div className="space-x-4">

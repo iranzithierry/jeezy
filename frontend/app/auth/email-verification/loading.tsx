@@ -1,4 +1,4 @@
-import AuthLoadingSkeleton from "@/components/auth/auth-loading-skeleton"
+import FormSkeleton from "@/components/auth/form-skeleton"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Loading() {
@@ -11,7 +11,7 @@ export default function Loading() {
         <Skeleton className="h-8 w-48 mx-auto" />
         <Skeleton className="h-5 w-96 mx-auto" />
       </div>
-      <AuthLoadingSkeleton/>
+      <FormSkeleton />
       <Skeleton className="h-10 w-40 mx-auto" />
     </div>
   )

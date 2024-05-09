@@ -1,7 +1,7 @@
 import React from 'react'
 import { Skeleton } from '../ui/skeleton'
 
-export default function AuthLoadingSkeleton() {
+export default function FormSkeleton() {
     return (
         <div className="w-full max-w-md space-y-6 bg-white dark:bg-gray-950 p-6 rounded-lg shadow-lg animate-pulse">
             <div className="space-y-4">

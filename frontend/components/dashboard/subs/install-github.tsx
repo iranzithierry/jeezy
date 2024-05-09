@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { SpinnerIcon } from '@/components/ui/icons'
 import { GithubIcon } from '@/components/icons'
 import { useRouter } from 'next/navigation';
-export default function Installation() {
+export default function InstallGithub() {
     const [authenticating, setAuthenticating] = useState(false)
     const router = useRouter()
     const authenticate = () => {
@@ -21,21 +21,20 @@ export default function Installation() {
         }
     }
     return (
-        <div className="flex justify-center">
-            <Card className='max-w-[34rem] w-full'>
+        <div className="flex justify-center h-full items-center">
+            <Card>
                 <CardHeader className='text-center'>
                     <CardTitle>Import Git Repository</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid gap-4 max-h-80 overflow-y-auto">
-                        <p className='text-center'>To have access on your github repositories you have to authenticate it.</p>
+                    <div className="grid gap-4 overflow-y-auto">
+                        <p className='text-center max-w-md'>To have access on your github repositories you have to authenticate it.</p>
                         <div className='w-full flex justify-center'>
                             <Button size={'lg'} type="button" onClick={() => authenticate()}>
-                                {authenticating ? (
-                                    <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
-                                    <GithubIcon className="mr-2 h-4 w-4" />
-                                )}
+                                {authenticating ? 
+                                (<SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />) 
+                                : 
+                                (<GithubIcon className="mr-2 h-4 w-4" />)}
                                 {" "}
                                 GitHub
                             </Button>

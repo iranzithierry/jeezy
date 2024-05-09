@@ -31,8 +31,8 @@ const fetcher = async (config: FetcherConfigType) => {
     const { url, token, params, method, body } = config;
 
     const session: any =  await getSession()
-    if (!session?.user?.username) {
-        console.error("No authorization username availale");
+    if (!session?.user?.installed_github) {
+        console.error("User has not installed github");
         return null
 
     };

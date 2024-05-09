@@ -11,15 +11,15 @@ export default async function DashboardLayout({ children, }: { children: React.R
   }
   return (
     <AuthProvider session={await checkSession()}>
-      <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      <div className="grid h-screen  w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
         <Sidebar />
         <div className="flex flex-col">
           <Suspense fallback="...">
             <Header />
           </Suspense>
-          <main className="flex flex-col flex-1 gap-4 p-4 lg:gap-6 lg:p-6">
+          <section className="flex flex-col flex-1 p-4 h-full dark:bg-gray-800/40">
             {children}
-          </main>
+          </section>
         </div>
       </div >
     </AuthProvider>
