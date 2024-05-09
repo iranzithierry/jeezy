@@ -33,7 +33,7 @@ export default function Page() {
     useEffect(() => {
         const installationId = params.getAll("installation_id")[0];
         getGitHubToken(installationId);
-    }, [params]);
+    }, [params, getGitHubToken]);
 
     return (
         <div className="container relative h-screen flex items-center justify-center">

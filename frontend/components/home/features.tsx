@@ -17,7 +17,7 @@ export default function Features() {
                                 Friendly user interface to ship your app easily
                             </h2>
                             <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                               Create an account then connect your github that's it
+                               Create an account then connect your github that&apos;s it
                             </p>
                         </div>
                         <ul className="grid gap-2 py-4">
