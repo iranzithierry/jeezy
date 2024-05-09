@@ -4,10 +4,12 @@ import { extractErrorValues } from "@/lib/utils";
 import { createSession } from "@/lib/sessions";
 import { cookies } from "next/headers";
 import { deleteCookie } from "@/lib/cookies";
+import authAxios from "../axios";
+import { parseCookies, setCookie, destroyCookie } from 'nookies'
 
 export async function login(data: any) {
     const fetcherConfig = {
-        url: "http:127.0.0.1:8000/api/auth/login/",
+        url: "http://127.0.0.1:8000/api/auth/login/",
         body: JSON.stringify(data),
         method: "post"
     }
@@ -25,7 +27,7 @@ export async function login(data: any) {
 }
 export async function sign_up(data: any) {
     const fetcherConfig = {
-        url: "http:127.0.0.1:8000/api/auth/register/",
+        url: "http://127.0.0.1:8000/api/auth/register/",
         body: JSON.stringify(data),
         method: "post"
     }
@@ -39,11 +41,21 @@ export async function sign_up(data: any) {
     } else {
         return { "error": true, "message": extractErrorValues(response) }
     }
+}
+export async function get_new_pvt_access_token() {
+    // const { data } = await (await authAxios()).post("http://127.0.0.1:8000/api/auth/github/access_token");
+    // if ("success" in data && data.success) {
+    //     setCookie(null, "__gh.pvte.access_token", data.message, { maxAge: 60*60, path: "/"})
+    //     return data.message as string
+    // } else {
+    //     return ''
+    // }
+    return 'hell'
 }
 
 export async function verify_email(data: any) {
     const fetcherConfig = {
-        url: "http:127.0.0.1:8000/api/auth/verify_email/",
+        url: "http://127.0.0.1:8000/api/auth/verify_email/",
         body: JSON.stringify(data),
         method: "post"
     }
@@ -58,7 +70,7 @@ export async function verify_email(data: any) {
         return { "error": true, "message": extractErrorValues(response) }
     }
 }
-export async function logout () {
+export async function logout() {
     await deleteCookie('session')
     await deleteCookie('refresh.token')
     await deleteCookie('access.token')
@@ -94,6 +106,6 @@ const authorize = async (data: LoginResponse) => {
         const err: any = error
         throw new Error(err.message)
     } finally {
-        createSession({user: data.user})
+        createSession({ user: data.user })
     }
 }

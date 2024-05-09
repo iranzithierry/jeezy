@@ -1,17 +1,24 @@
+// "use client";
 import React from 'react'
 import ReposList from './components/repos-list'
 import Installation from './components/installation'
 import { all, search } from '@/apis/repository'
 import { cookies } from 'next/headers'
 import { Repo } from '@/types/repos'
+import { get_new_pvt_access_token } from '@/apis/auth'
+import { setCookie } from '@/lib/cookies'
 
 export default async function Page() {
     let repositories: Repo[] = []
-    const ghToken = cookies().get("__gh.pvte.access_token")?.value
+    let ghToken = cookies().get("__gh.pvte.access_token")?.value
+    await setCookie("s","f", 60)
     if (ghToken && ghToken.length !== 0) {
-        repositories = await all(ghToken)
-        console.log(repositories);
+        // repositories = await all(ghToken)
         
+    }else{
+        const new_token = await get_new_pvt_access_token()
+        ghToken = new_token
+        // repositories = await all(ghToken)
     }
 
     return (

@@ -124,3 +124,26 @@ class GithubInstallationView(generics.CreateAPIView):
             return Response({"message": response, "user": UserSerializer(user).data, "success": True if str(data.status_code).startswith("2") else False, "source": "Github" },  status=data.status_code )
         else:
             return Response({"message": "No installation id provided", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GithubPrivateAccessToken(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        user: User = request.user
+        installation_id = user.github_installaton_id
+        application_jwt = get_app_jwt()
+        headers = {
+            "Authorization": f"Bearer {application_jwt}",
+        }
+        try:
+            data = requests.post(f"https://api.github.com/app/installations/{installation_id}/access_tokens", headers=headers)
+        except Exception as e:
+            return Response({"message": e, "success": False, "source": "Github" },  status=status.HTTP_500_INTERNAL_SERVER_ERROR )
+        response = data.json()
+        if "message" in  data.json():
+            response = data.json()['message']
+        if "token" in response:
+            user.github_private_access_token = response['token']
+            user.save()
+            response = response['token']
+        return Response({"message": response, "success": True if str(data.status_code).startswith("2") else False, "source": "Github" },  status=data.status_code )

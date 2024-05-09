@@ -30,8 +30,6 @@ const fetcher = async (config: FetcherConfigType) => {
     const { url, token, params, method, body } = config;
 
     const session: any =  await getSession()
-    console.log(session?.user);
-    
     if (!session?.user?.username) {
         console.error("No authorization username availale");
         return null
@@ -52,7 +50,7 @@ const fetcher = async (config: FetcherConfigType) => {
             body: body || null
         });
         try {
-            if (!response.ok) return ;
+            if (!response.ok) return null;
             const data = await response.json();
             return data;
         } catch (error: any) {

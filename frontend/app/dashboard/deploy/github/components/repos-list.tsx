@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { debounce } from 'lodash';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,11 +12,11 @@ import Image from 'next/image';
 export default function ReposList({ repos, search }: { repos: Repo[], search: Function }) {
     const [repositories, setRepositories] = useState<Repo[]>(repos);
     const [searching, setSearching] = useState<boolean>(false);
-    const [searchQuery, setSearchQuery] = useState<string>('');
 
     const handleSearch = async (query: string) => {
-        setSearching(true);
+        console.log("handleSearch");
         
+        setSearching(true);
         if (query.length > 1) {
             const items = await search(query);
             setRepositories(items);
@@ -25,27 +25,21 @@ export default function ReposList({ repos, search }: { repos: Repo[], search: Fu
         }
         setSearching(false);
     };
-    const debouncedSearch = debounce(handleSearch, 860);
-
-    useEffect(() => {
-        debouncedSearch(searchQuery);
-        return () => {
-            debouncedSearch.cancel();
-        };
-    }, [searchQuery, debouncedSearch]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
+    const handleChange = (value: string) => {
+        console.log("handleChange");
+        
+        handleTextDebounce(value);
     };
+    const handleTextDebounce = useCallback(debounce(handleSearch, 860), []);
 
     return (
-        <Card className="max-w-[34rem] w-full">
+        <Card className="#max-w-[34rem] w-full">
             <CardHeader>
                 <CardTitle>Import Git Repository</CardTitle>
                 <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
                     <Input
                         className="bg-white md:flex-1 dark:bg-gray-950"
-                        onChange={handleChange}
+                        onChange={(e) => handleChange(e.target.value)}
                         placeholder="Search..."
                         type="search"
                     />
@@ -66,7 +60,7 @@ export default function ReposList({ repos, search }: { repos: Repo[], search: Fu
                                 </p>
                             </div>
                             <div className="ml-auto font-medium">
-                                <LinkButton>Import</LinkButton>
+                                <LinkButton linkTo={`/dashboard/projects/new?repository=${repo.html_url}&project=${repo.name}&deployment=github&method=advanced`}>Import</LinkButton>
                             </div>
                         </div>
                     ))}

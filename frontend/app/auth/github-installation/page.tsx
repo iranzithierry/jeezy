@@ -17,7 +17,7 @@ export default function Page() {
                 const { data } = await (await authAxios()).post("/backend-api/auth/github/installation", JSON.stringify(body));
                 if ("success" in data && data.success) {
                     toast.success("Done now you can close this pop up");
-                    setCookie('__gh.pvte.access_token', data.message, {maxAge: 24 * 60 * 60, path: "/", httpOnly: true})
+                    setCookie('__gh.pvte.access_token', data.message, {maxAge: 60 * 60, path: "/", httpOnly: true})
                     createSession({user: data.user})
                     // window.close()
                 }
