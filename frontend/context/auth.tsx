@@ -1,14 +1,15 @@
 "use client";
 import React, { createContext, useContext } from "react";
-import { Session } from "next-auth";
 
-interface AuthContextType { }
+interface AuthContextType {
+    session: any | null;
+}
 
-const AuthContext = createContext<AuthContextType>({  });
+const AuthContext = createContext<AuthContextType>({ session: null });
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode; session: any | null }> = ({ children, session }) => {
     return (
-        <AuthContext.Provider value={{  }}>
+        <AuthContext.Provider value={{ session }}>
             {children}
         </AuthContext.Provider>
     );

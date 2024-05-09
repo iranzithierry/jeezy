@@ -1,8 +1,9 @@
 'use server'
 import { BaseResponse, LoginResponse } from "@/types";
-import { method } from "lodash";
-import { signIn } from "@/auth"
 import { extractErrorValues } from "@/lib/utils";
+import { createSession } from "@/lib/sessions";
+import { cookies } from "next/headers";
+import { deleteCookie } from "@/lib/cookies";
 
 export async function login(data: any) {
     const fetcherConfig = {
@@ -15,8 +16,7 @@ export async function login(data: any) {
         if (!response.success) {
             return { "error": true, "message": response.message }
         } else {
-            let stringifiedResponse = JSON.stringify(response)
-            signIn("credentials", { stringifiedResponse, redirect: false })
+            await authorize(response)
             return { "error": false, "message": response.message }
         }
     } else {
@@ -55,10 +55,14 @@ export async function verify_email(data: any) {
             return { "error": false, "message": response.message }
         }
     } else {
-        console.log(extractErrorValues(response));
-        
         return { "error": true, "message": extractErrorValues(response) }
     }
+}
+export async function logout () {
+    await deleteCookie('session')
+    await deleteCookie('refresh.token')
+    await deleteCookie('access.token')
+    return true
 }
 
 type FetcherConfigType = { url: string; token?: string; method?: string; body?: any; };
@@ -80,4 +84,16 @@ const fetcher = async (config: FetcherConfigType) => {
     });
     const data = await response.json();
     return data;
+}
+
+const authorize = async (data: LoginResponse) => {
+    try {
+        cookies().set({ name: "access.token", value: data.tokens.access, maxAge: 8 * 60 * 60, path: "/", httpOnly: true, })
+        cookies().set({ name: "refresh.token", value: data.tokens.refresh, maxAge: 5 * 24 * 60 * 60, path: "/", httpOnly: true })
+    } catch (error) {
+        const err: any = error
+        throw new Error(err.message)
+    } finally {
+        createSession({user: data.user})
+    }
 }

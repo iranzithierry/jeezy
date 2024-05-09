@@ -1,4 +1,4 @@
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.request import Request
 from jeezy.users.models import User
@@ -15,7 +15,7 @@ class GithubAuthenticateView(APIView):
         if form.is_valid():
             email = form.cleaned_data.get("email")
             access_token = form.cleaned_data.get("access_token")
-            user = User.objects.filter(email=email, github_access_token=access_token).first()
+            user = User.objects.filter(email=email, github_public_access_token=access_token).first()
             if user:
                 return Response(
                     { "message": "Login successful", "success": True, "user": UserSerializer(user).data,  "tokens": get_tokens_for_user(user), },
@@ -53,7 +53,7 @@ class GithubAuthenticateView(APIView):
         user.name = gh_user["name"]
         user.username = gh_user["login"]
         user.github_id = gh_user["id"],
-        user.github_access_token = access_token
+        user.github_public_access_token = access_token
         user.save()
 
         return Response(
@@ -78,7 +78,7 @@ class GithubAuthenticateView(APIView):
             name=gh_user["name"],
             username=gh_user["login"],
             picture=gh_user.get("avatar_url", None),
-            github_access_token=access_token,
+            github_public_access_token=access_token,
             sign_up_method="github",
         )
         user.set_email_verified()
@@ -91,25 +91,36 @@ class GithubAuthenticateView(APIView):
 
 
 class GithubInstallationView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     def create(self, request: Request, *args, **kwargs) -> Response:
         installation_id = request.data.get("installation_id")
         if installation_id:
             application_jwt = get_app_jwt()
+            user: User = request.user
             headers = {
                 "Authorization": f"Bearer {application_jwt}",
             }
             try:
                 data = requests.post(f"https://api.github.com/app/installations/{installation_id}/access_tokens", headers=headers)
             except Exception as e:
+                print(e)
                 return Response({"message": e, "success": False, "source": "Github" },  status=status.HTTP_500_INTERNAL_SERVER_ERROR )
             response = data.json()
-            print(response)
             # ATTACHING AUTH USER WITH INSTALLATION ID
             if "message" in  data.json():
                 response = data.json()['message']
             if "token" in response:
-                # return token with datetime.fromisoformat("2024-05-06T23:29:28Z".replace('Z', '+00:00'))
+                try:
+                    new_request = requests.get("https://api.github.com/installation/repositories?per_page=1", headers={"Authorization": f"Bearer {response['token']}"}).json()
+                except Exception as e:
+                    pass
+                if  len(new_request['repositories']) < 1:
+                    return Response({"message": "You must have atleast one repository to github", "success": False, "source": "Github" },  status=status.HTTP_500_INTERNAL_SERVER_ERROR )
+                user.github_installaton_id = installation_id
+                user.github_private_access_token = response['token']
+                user.username = new_request['repositories'][0]['owner']['login']
+                user.save()
                 response = response['token']
-            return Response({"message": response, "success": True if data.status_code == 200 else False, "source": "Github" },  status=data.status_code )
+            return Response({"message": response, "user": UserSerializer(user).data, "success": True if str(data.status_code).startswith("2") else False, "source": "Github" },  status=data.status_code )
         else:
             return Response({"message": "No installation id provided", "success": False}, status=status.HTTP_400_BAD_REQUEST)

@@ -4,16 +4,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { SpinnerIcon } from '@/components/ui/icons'
 import { GithubIcon } from '@/components/icons'
+import { useRouter } from 'next/navigation';
 export default function Installation() {
     const [authenticating, setAuthenticating] = useState(false)
+    const router = useRouter()
     const authenticate = () => {
         setAuthenticating(true)
-        const windowFeatures = "left=100,top=100,width=520,height=520,popup=yes";
+        const windowFeatures = "left=100,top=100,width=820,height=720,popup=yes";
         const handle = window.open("https://github.com/apps/jeezy-dev/installations/new/permissions?target_id=115815954", "_blank", windowFeatures)
         if (!handle) {
             window.open("https://github.com/apps/jeezy-dev/installations/new/permissions?target_id=115815954")
         }
         setAuthenticating(false)
+        if(handle?.closed){
+            router.refresh()
+        }
     }
     return (
         <div className="flex justify-center">

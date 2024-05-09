@@ -20,6 +20,7 @@ export interface Tokens {
 }
 export interface User {
     id:             number;
+    username:       string  | null;
     name:           string  | null;
     email:          string;
     image:          string  | null;

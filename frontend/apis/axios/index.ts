@@ -1,18 +1,28 @@
+import { getCookie } from "@/lib/cookies";
 import axios from "axios";
-import { cookies } from "next/headers";
-import { getCookie, hasCookie } from 'cookies-next';
 
-let authorizationHeader = {};
-const accessToken = getCookie('access.token');
-if (accessToken && accessToken.length !== 0) {
-    authorizationHeader = { "Authorization": accessToken, }
-}
-const authAxios = axios.create({
-    headers: {
-        ...authorizationHeader,
-        "Content-Type": "application/json",
-        timeout: 1000,
-    },
-});
+const authAxios = async () => {
+    try {
+        const accessToken = await getCookie('access.token');
+        let authorizationHeader = {};
+        
+        if (accessToken && accessToken.length !== 0) {
+            authorizationHeader = { "Authorization": `Bearer ${accessToken}` };
+        }
+
+        const instance = axios.create({
+            headers: {
+                ...authorizationHeader,
+                "Content-Type": "application/json",
+                timeout: 1000,
+            },
+        });
+
+        return instance;
+    } catch (error) {
+        console.error("Error while creating Axios instance:", error);
+        return axios.create();
+    }
+};
 
 export default authAxios;

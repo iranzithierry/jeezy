@@ -56,7 +56,7 @@ export default function ReposList({ repos, search }: { repos: Repo[], search: Fu
                     {/* @ts-ignore */}
                     {repositories && !searching && repositories?.sort((a, b) => new Date(b.updated_at?.split("T")[0]) - new Date(a.updated_at?.split("T")[0])).map((repo, index) => (
                         <div className="flex items-center gap-4" key={repo.id}>
-                            <Image src="https://api-frameworks.vercel.sh/framework-logos/other.svg" alt="" className="h-9 w-9" />
+                        <Image src="https://api-frameworks.vercel.sh/framework-logos/other.svg" width={100} height={100} alt="" className="h-9 w-9" />
                             <div className="grid gap-1">
                                 <p className="text-sm font-medium leading-none shrink">
                                     {repo.name}

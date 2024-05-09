@@ -7,9 +7,11 @@ import { Repo } from '@/types/repos'
 
 export default async function Page() {
     let repositories: Repo[] = []
-    const ghToken = cookies().get("gh.installation.token")?.value
+    const ghToken = cookies().get("__gh.pvte.access_token")?.value
     if (ghToken && ghToken.length !== 0) {
         repositories = await all(ghToken)
+        console.log(repositories);
+        
     }
 
     return (

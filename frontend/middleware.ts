@@ -1,14 +1,24 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { Session } from "next-auth";
-import { auth } from './auth';
+import { getSession } from './lib/sessions';
+
+const protectedRoutes = ['/dashboard']
+const publicRoutes = ['/auth/login', '/auth/signup', '/']
 
 export async function middleware(request: NextRequest) {
-    const session: Session | null = await auth()
-    if (!session?.user && request.nextUrl.pathname.startsWith("/dashboard")) {
-        return NextResponse.redirect(new URL('/auth/login', request.url));
+    const path = request.nextUrl.pathname
+    const isProtectedRoute = protectedRoutes.includes(path)
+    const isPublicRoute = publicRoutes.includes(path)
+
+    const session = await getSession("session")
+    if (isProtectedRoute && !session?.user) {
+        return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
     }
-    return null;
+
+    if ( isPublicRoute && session?.user && !request.nextUrl.pathname.startsWith('/dashboard')) {
+        return NextResponse.redirect(new URL('/dashboard', request.nextUrl))
+    }
+      return NextResponse.next()
 }
 
 export const config = {

@@ -29,7 +29,7 @@ class SignInView(APIView):
             
             user = User.objects.filter(email=email).first()
             if user is None:
-                return self.respond("Invalid credentials")
+                return self.respond("Invalid credentials", status=401)
             if not user.email_verified():
                 return self.respond("Verify you email first to login")
             
@@ -39,7 +39,7 @@ class SignInView(APIView):
             authorized = user.check_password(password)
 
             if not authorized:
-                return self.respond("Invalid credentials")
+                return self.respond("Invalid credentials", status=401)
 
             return Response(
                 {"message": "Login successful", "success": True, "user": UserSerializer(user).data, "tokens": get_tokens_for_user(user)},

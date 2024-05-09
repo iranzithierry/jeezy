@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { UrlType, getGithubUrl } from "@/constants/urls";
+import { getSession } from "@/lib/sessions";
 import { SearchRepoResponse } from "@/types/repos";
 import { cookies } from "next/headers";
 
@@ -16,7 +17,7 @@ export async function search(query: string) {
     "use server";
     const fetcherConfig = {
         url: "search" as UrlType,
-        token: cookies().get('gh.installation.token')?.value,
+        token: cookies().get('__gh.pvte.access_token')?.value,
         params: query
     }
     const data: SearchRepoResponse = await fetcher(fetcherConfig)
@@ -25,10 +26,12 @@ export async function search(query: string) {
 }
 type FetcherConfigType = { url: UrlType; token?: string; params?: string; method?: "post" | "get"; body?: any; };
 const fetcher = async (config: FetcherConfigType) => {
+    "use server";
     const { url, token, params, method, body } = config;
 
-    const session = await auth();
-
+    const session: any =  await getSession()
+    console.log(session?.user);
+    
     if (!session?.user?.username) {
         console.error("No authorization username availale");
         return null

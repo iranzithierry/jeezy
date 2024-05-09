@@ -13,7 +13,8 @@ class User(AbstractUser):
     sign_up_method = models.CharField(_("login method used"), blank=True, max_length=255, null=True, default="email")
     username = models.CharField(blank=True, max_length=255, null=True, unique=True)
     github_installaton_id = models.CharField(_("github installaton_id"), blank=True, max_length=255, null=True, unique=True)
-    github_access_token = models.CharField(_("github access token"), blank=True, max_length=255, null=True, unique=True)
+    github_public_access_token = models.CharField(_("github access token"), blank=True, max_length=255, null=True, unique=True)
+    github_private_access_token = models.CharField(_("github private access token"), blank=True, max_length=255, null=True, unique=True)
     github_id = models.CharField(_("github id"), blank=True, max_length=255, null=True, unique=True)
     USERNAME_FIELD = "email"
 

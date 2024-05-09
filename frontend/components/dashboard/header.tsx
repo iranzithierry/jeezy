@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Menu, Search, } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -5,10 +6,10 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import Nav from "./nav"
 import UserDropdown from '@/components/layout/user-dropdown';
-import { auth } from "@/auth";
+import { useAuth } from "@/context/auth";
 
-export default async function Header() {
-    const session = await auth();
+export default function Header() {
+    const { session } = useAuth()
     return (
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
             <Sheet>
@@ -31,7 +32,7 @@ export default async function Header() {
                 </form>
             </div>
             <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
-                <UserDropdown session={session} />
+                <UserDropdown user={session?.user} />
             </React.Suspense>
         </header>
     )

@@ -12,7 +12,6 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { login, sign_up, verify_email } from "@/apis/auth"
 import { useRouter } from "next/navigation"
-import { Type } from "lucide-react"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean, extraData?: { token: string; email: string } } { }
 
