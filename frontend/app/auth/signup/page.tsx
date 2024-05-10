@@ -2,12 +2,13 @@ import Link from "next/link"
 import { Metadata } from "next"
 import { Form } from "@/components/auth/form"
 import { LinkButton } from "@/components/ui/link-button"
+import EmailForm from "@/components/auth/email-form"
 
 export const metadata: Metadata = {
     title: "Sign up",
 }
 
-export default function AuthenticationPage() {
+export default function SignUp() {
     return (
         <>
             <div className="absolute top-0 right-0 p-4 z-20">
@@ -26,7 +27,7 @@ export default function AuthenticationPage() {
                                 Enter your email below to create your account
                             </p>
                         </div>
-                        <Form />
+                        <EmailForm />
                         <p className="px-8 text-center text-sm text-muted-foreground">
                             By clicking continue, you agree to our{" "}
                             <Link href="/terms" className="underline underline-offset-4 hover:text-primary" >
@@ -35,8 +36,7 @@ export default function AuthenticationPage() {
                             {" "}and{" "}
                             <Link href="/privacy" className="underline underline-offset-4 hover:text-primary" >
                                 Privacy Policy
-                            </Link>
-                            .
+                            </Link>.
                         </p>
                     </div>
                 </div>

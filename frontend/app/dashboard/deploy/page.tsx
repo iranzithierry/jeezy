@@ -9,9 +9,11 @@ import InstallGithub from '@/components/dashboard/subs/install-github'
 
 export default async function Page() {
     const repos = await all()
+    console.log(repos);
+    
     return (<Content repos={repos} />)
 }
-async function Content({ repos }: { repos: any }) {
+async function Content({ repos = [] }: { repos: any }) {
     "use client";
     const session = await getSession("session")
     const user = session?.user as User
@@ -29,9 +31,9 @@ async function Content({ repos }: { repos: any }) {
                     To deploy a new Project, import an existing Git Repository .
                 </p>
             </div>
-            {!user?.installed_github ?
-                (<InstallGithub />) :
-                (<ReposList repos={repos} search={search} />)
+            {user?.installed_github ?
+                (<ReposList repos={repos} search={search} />):
+                (<InstallGithub />) 
             }
         </main >
     )

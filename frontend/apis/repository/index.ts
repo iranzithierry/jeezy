@@ -1,65 +1,64 @@
 import { auth } from "@/auth";
+import COOKIE_NAMES from "@/constants/cookies-names";
 import { UrlType, getGithubUrl } from "@/constants/urls";
 import { getSession } from "@/lib/sessions";
 import { SearchRepoResponse } from "@/types/repos";
 import { cookies } from "next/headers";
+import authAxios from "../axios";
+import { getCookie } from "@/lib/cookies";
+import axios from "axios";
 
 export async function all() {
     "use server";
-    const fetcherConfig = {
-        url: "all_by_languages" as UrlType,
-        token: cookies().get('__gh.pvte.access_token')?.value,
+    const axiosOptions = {
+        url: "https://api.github.com/search/repositories?q=language:typescript,javascript,html+user:{username}&type=Repositories",
     }
-    const data: SearchRepoResponse = await fetcher(fetcherConfig)
+    const data: SearchRepoResponse = await apiCall(axiosOptions)
     if (data) return data?.items
-    return [] 
+    return []
 }
 export async function search(query: string) {
     "use server";
-    const fetcherConfig = {
-        url: "search" as UrlType,
-        token: cookies().get('__gh.pvte.access_token')?.value,
+    const axiosOptions = {
+        url: "https://api.github.com/search/repositories?q=user:{username}+",
         params: query
     }
-    const data: SearchRepoResponse = await fetcher(fetcherConfig)
+    const data: SearchRepoResponse = await apiCall(axiosOptions)
     if (data) return data?.items
-    return [] 
+    return []
 }
-type FetcherConfigType = { url: UrlType; token?: string; params?: string; method?: "post" | "get"; body?: any; };
-const fetcher = async (config: FetcherConfigType) => {
-    "use server";
-    const { url, token, params, method, body } = config;
 
-    const session: any =  await getSession()
+type AxiosOptions = { url: string; params?: string; };
+const apiCall = async (options: AxiosOptions) => {
+
+    const { url, params } = options;
+
+    const session: any = await getSession()
     if (!session?.user?.installed_github) {
         console.error("User has not installed github");
         return null
 
     };
-
+    const accessToken = await getCookie(COOKIE_NAMES.GITHUB_PRIVATE_ACCESS_TOKEN);
+    console.log(accessToken);
+    
     let authorizationHeader = {};
-    if (token) {
-        authorizationHeader = { 'Authorization': `Bearer ${token}` };
+    
+    if (accessToken && accessToken.length !== 0) {
+        authorizationHeader = { "Authorization": `Bearer ${accessToken}` };
+    }
+    const dynamicUrl = url.replace("{username}", session.user.username)
+    const dynamicOptions = {
+        url: dynamicUrl,
+        params: params ? params : {},
+        method: 'GET',
+        ...authorizationHeader
     }
     try {
-        const response = await fetch(getGithubUrl(session?.user?.username, url) + (params || ''), {
-            method: method || 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                ...authorizationHeader
-            },
-            body: body || null
-        });
-        try {
-            if (!response.ok) return null;
-            const data = await response.json();
-            return data;
-        } catch (error: any) {
-            console.error("FETCH ERROR 1:", error.message);
-            return null;
-        }
-    } catch (error: any) {
-        console.error("FETCH ERROR 2:", error.message);
-        return null;
+        const response = await axios.request(dynamicOptions);
+        return response.data;
+    } catch (error) {
+        console.log('error: ', error);
+        return {};
     }
 }

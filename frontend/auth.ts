@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import { createSession } from './lib/sessions';
 import BACKEND_URLS from './constants/backend-urls';
 import COOKIE_NAMES from './constants/cookies-names';
+import COOKIE_TIME from './constants/cookies-time';
 
 export const { handlers: { GET, POST }, auth, signIn } = NextAuth({
     session: {
@@ -16,7 +17,7 @@ export const { handlers: { GET, POST }, auth, signIn } = NextAuth({
             if (account?.provider == "github") {
                 if (profile) {
                     const data = {"email": profile.email, "access_token": account.access_token}
-                    const response = await fetch(`backend-api/${BACKEND_URLS.GITHUB_AUTHENTICATE}`, {
+                    const response = await fetch(`${BACKEND_URLS.GITHUB_AUTHENTICATE}`, {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json"

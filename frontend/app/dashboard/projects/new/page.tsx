@@ -7,9 +7,7 @@ import { Input } from '@/components/ui/input'
 import { PlusIcon, TrashIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 
-export default  function Page({ props }: any) {
-    const params = useSearchParams()
-    console.log( params.getAll("repository"));
+export default  function Page({ searchParams }: { searchParams: { repository: string, project: string } }) {
    
     return (
         <div className="grid gap-6">
@@ -22,11 +20,11 @@ export default  function Page({ props }: any) {
                     <form className="grid gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="project-name">Project Name</Label>
-                            <Input id="project-name" placeholder="Enter project name" />
+                            <Input id="project-name" placeholder="Enter project name"  value={searchParams.project}/>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="git-repo">Git Repository</Label>
-                            <Input id="git-repo" placeholder="Enter Git repository URL" />
+                            <Input id="git-repo" placeholder="Enter Git repository URL"value={searchParams.repository} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="root-dir">Root Directory</Label>

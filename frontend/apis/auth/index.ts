@@ -1,15 +1,17 @@
 'use server'
-import { BaseResponse, LoginResponse } from "@/types";
-import { extractErrorValues } from "@/lib/utils";
-import { createSession } from "@/lib/sessions";
-import { cookies } from "next/headers";
-import { deleteCookie, setCookie } from "@/lib/cookies";
 import authAxios from "../axios";
+import { cookies } from "next/headers";
+import { createSession } from "@/lib/sessions";
+import { extractErrorValues } from "@/lib/utils";
+import BACKEND_URLS from "@/constants/backend-urls";
 import COOKIE_NAMES from "@/constants/cookies-names";
+import { BaseResponse, LoginResponse } from "@/types";
+import { deleteCookie, setCookie } from "@/lib/cookies";
+import COOKIE_TIME from "@/constants/cookies-time";
 
 export async function login(data: any) {
     const fetcherConfig = {
-        url: "http://127.0.0.1:8000/api/auth/login/",
+        url: BACKEND_URLS.LOGIN,
         body: JSON.stringify(data),
         method: "post"
     }
@@ -25,9 +27,25 @@ export async function login(data: any) {
         return { "error": true, "message": extractErrorValues(response) }
     }
 }
+export async function install_user(installationId: string) {
+
+    try {
+        const { data } = await (await authAxios()).post(`${BACKEND_URLS.GITHUB_INSTALLATION}`, JSON.stringify({ "installation_id": installationId }));
+        if ("success" in data && data.success) {
+            return { "error": false, "message": data.message }
+        }
+        if ("success" in data && !data.success) {
+            return { "error": true, "message": data.message }
+        } else {
+            return { "error": true, "message": extractErrorValues(data) }
+        }
+    } catch (error: any) {
+        return { "error": true, "message": error?.response?.data?.detail ?? error?.response?.data?.message ?? error?.message }
+    }
+}
 export async function sign_up(data: any) {
     const fetcherConfig = {
-        url: "http://127.0.0.1:8000/api/auth/register/",
+        url: BACKEND_URLS.SIGNUP,
         body: JSON.stringify(data),
         method: "post"
     }
@@ -43,9 +61,9 @@ export async function sign_up(data: any) {
     }
 }
 export async function new_github_access_token() {
-    const { data } = await (await authAxios()).post("http://127.0.0.1:8000/api/auth/github/access_token");
+    const { data } = await (await authAxios()).post(BACKEND_URLS.NEW_GITHUB_ACCESS_TOKEN);
     if ("success" in data && data.success) {
-        setCookie(COOKIE_NAMES.GITHUB_PRIVATE_ACCESS_TOKEN, data.message, { maxAge: 60*60, path: "/"})
+        setCookie(COOKIE_NAMES.GITHUB_PRIVATE_ACCESS_TOKEN, data.message, { maxAge: COOKIE_TIME.GITHUB_PRIVATE_ACCESS, path: "/" })
         return data.message as string
     } else {
         return ''
@@ -54,15 +72,16 @@ export async function new_github_access_token() {
 
 export async function verify_email(data: any) {
     const fetcherConfig = {
-        url: "backend-api/auth/verify_email/",
+        url: BACKEND_URLS.EMAIL_VERIFICATION,
         body: JSON.stringify(data),
         method: "post"
     }
-    const response: BaseResponse = await fetcher(fetcherConfig)
+    const response: LoginResponse = await fetcher(fetcherConfig)
     if ("success" in response) {
         if (!response.success) {
             return { "error": true, "message": response.message }
         } else {
+            await authorize(response)
             return { "error": false, "message": response.message }
         }
     } else {
@@ -71,8 +90,8 @@ export async function verify_email(data: any) {
 }
 export async function logout() {
     await deleteCookie('session')
-    await deleteCookie('refresh.token')
-    await deleteCookie('access.token')
+    await deleteCookie(COOKIE_NAMES.REFRESH_TOKEN)
+    await deleteCookie(COOKIE_NAMES.ACCESS_TOKEN)
     return true
 }
 
@@ -99,8 +118,8 @@ const fetcher = async (config: FetcherConfigType) => {
 
 const authorize = async (data: LoginResponse) => {
     try {
-        cookies().set({ name: "access.token", value: data.tokens.access, maxAge: 8 * 60 * 60, path: "/", httpOnly: true, })
-        cookies().set({ name: "refresh.token", value: data.tokens.refresh, maxAge: 5 * 24 * 60 * 60, path: "/", httpOnly: true })
+        cookies().set({ name: COOKIE_NAMES.ACCESS_TOKEN, value: data.tokens.access, maxAge: COOKIE_TIME.ACCESS_TOKEN, path: "/", httpOnly: true, })
+        cookies().set({ name: COOKIE_NAMES.REFRESH_TOKEN, value: data.tokens.refresh, maxAge: COOKIE_TIME.REFRESH_TOKEN, path: "/", httpOnly: true })
     } catch (error) {
         const err: any = error
         throw new Error(err.message)

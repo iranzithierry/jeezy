@@ -11,35 +11,31 @@ import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { login, sign_up, verify_email } from "@/apis/auth"
-import { useRouter } from "next/navigation"
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean, extraData?: { token: string; email: string } } { }
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean, callback?: Function, extraData?: { token: string; email: string } } { }
 
-export function Form({ className, type = "signup", withGithub = true, extraData, ...props }: UserAuthFormProps) {
+export function Form({ className, type = "signup", withGithub = true, extraData, callback, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const router = useRouter()
   const onSubmit = async (data: any) => {
     setIsLoading(true)
     let auth_function = type === "signup" ? sign_up : type === "verify_email" ? verify_email : login;
-    let mergedData = {
-        ...data,
-        ...extraData
-    }
+    let mergedData = { ...data, ...extraData }
+    
     const response: { error: boolean, message: string } | any = await auth_function(mergedData)
+
     if (response.error) {
       toast.error(response.message)
     } else {
-      if (response.message == "Email verification link sent") {
-        toast.success(response.message)
-        router.push("/auth/email-verification-sent")
+      if (callback) {
+        await callback(response)
       }
       toast.success(response.message)
     }
     setIsLoading(false)
   }
-  const isError = (value: any | null) =>  value ? true : false
-  
+  const isError = (value: any | null) => value ? true : false
+
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -48,95 +44,48 @@ export function Form({ className, type = "signup", withGithub = true, extraData,
             <Label className="sr-only" htmlFor="email">
               Email
             </Label>
-            <Input
-              invalid={isError(errors.email?.message)}
-              id="email"
-              placeholder="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              value={extraData?.email}
-              disabled={extraData?.email ? true : isLoading}
+            <Input invalid={isError(errors.email?.message)} id="email" placeholder="email" autoCapitalize="none" autoComplete="email" autoCorrect="off" value={extraData?.email} disabled={extraData?.email ? true : isLoading}
               {...type !== "verify_email" && (
-                {...register('email',
                 {
-                  required: {
-                    value: true,
-                    message: "Email is required"
-                  },
-                  pattern: {
-                    value: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
-                    message: "Email you provided is invalid"
-                  }
-                })
-              }
+                  ...register('email',
+                    { required: { value: true, message: "Email is required" }, pattern: { value: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/, message: "Email you provided is invalid" } })
+                }
               )}
 
             />
-            {errors.email &&
-              // @ts-ignore
-              <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.email?.message}</span>
-            }
+            {/* @ts-ignore */}
+            {errors.email && <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.email?.message}</span>}
           </div>
           {type == "verify_email" && (
             <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="name">
-            Name
-            </Label>
-            <Input
-              invalid={isError(errors.name?.message)}
-              id="name"
-              placeholder="John Doe"
-              autoCapitalize="none"
-              autoComplete="name"
-              autoCorrect="off"
-              disabled={isLoading}
-              {...register('name',
-                {
-                  required: {
-                    value: true,
-                    message: "Name is required"
-                  },
-                })
-              }
-            />
-            {errors.name &&
-              // @ts-ignore
-              <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.name?.message}</span>
-            }
-          </div>
+              <Label className="sr-only" htmlFor="name">
+                Name
+              </Label>
+              <Input invalid={isError(errors.name?.message)} id="name" placeholder="John Doe" autoCapitalize="none" autoComplete="name" autoCorrect="off" disabled={isLoading}
+                {...register('name',
+                  { required: { value: true, message: "Name is required" } })
+                }
+              />
+              {/* @ts-ignore */}
+              {errors.name &&<span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.name?.message}</span>}
+            </div>
           )}
           {(type == "signin" || type == "verify_email") && (
             <div className="grid gap-1">
               <Label className="sr-only" htmlFor="password">
                 Password
               </Label>
-              <Input
-                invalid={isError(errors.password?.message)}
-                id="password"
-                type="password"
-                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                autoComplete="new-password"
-                disabled={isLoading}
+              <Input invalid={isError(errors.password?.message)} id="password" type="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" autoComplete="new-password" disabled={isLoading}
                 {...register('password',
-                  {
-                    required: {
-                      value: true,
-                      message: "Password is required"
-                    }
-                  })
+                  { required: { value: true, message: "Password is required" } })
                 }
               />
-              {errors.password &&
-                // @ts-ignore
-                <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.password?.message}</span>
-              }
+              {/* @ts-ignore */}
+              {errors.password && <span className="mt-2 text-xs font-medium leading-none text-red-500">{errors?.password?.message}</span> }
             </div>
           )}
           <Button disabled={isLoading}>
-            {isLoading && (
-              <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
-            )}
+            {isLoading && ( <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />)}
             {type == "verify_email" ? "Continue Sign Up" : type == "signin" ? "Sign In" : "Sign Up"}
           </Button>
         </div>
@@ -154,14 +103,12 @@ export function Form({ className, type = "signup", withGithub = true, extraData,
             </div>
           </div>
           <Button variant="outline" type="button" disabled={isLoading} onClick={() => signIn('github')}>
-            {isLoading ? (
-              <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <GithubIcon className="mr-2 h-4 w-4" />
-            )}{" "}
-            GitHub
+            {isLoading ? 
+            (<SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />): 
+            (<GithubIcon className="mr-2 h-4 w-4" />)}
+            {" "} GitHub
           </Button>
-          </>
+        </>
       )}
     </div>
   )

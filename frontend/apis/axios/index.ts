@@ -1,9 +1,11 @@
+"use server";
+import COOKIE_NAMES from "@/constants/cookies-names";
 import { getCookie } from "@/lib/cookies";
 import axios from "axios";
 
 const authAxios = async () => {
     try {
-        const accessToken = await getCookie('access.token');
+        const accessToken = await getCookie(COOKIE_NAMES.ACCESS_TOKEN);
         let authorizationHeader = {};
         
         if (accessToken && accessToken.length !== 0) {

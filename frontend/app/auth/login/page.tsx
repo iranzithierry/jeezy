@@ -1,12 +1,17 @@
 import { Metadata } from "next"
 import { Form } from "@/components/auth/form"
 import { LinkButton } from "@/components/ui/link-button"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
     title: "Login",
 }
 
-export default function AuthenticationPage() {
+export default async function LoginPage() {
+    const handleCallback = async (response: any) => {
+        "use server";
+        redirect('/dashboard')
+    }
     return (
         <>
             <div className="absolute top-0 right-0 p-4 z-20">
@@ -25,7 +30,7 @@ export default function AuthenticationPage() {
                                 Enter your email below to login  your account
                             </p>
                         </div>
-                        <Form type="signin" />
+                        <Form type="signin" callback={handleCallback} />
                     </div>
                 </div>
             </div>

@@ -67,7 +67,6 @@ class EmailVerificationView(generics.CreateAPIView):
                 # email verification doer
                 user.set_password(form.cleaned_data.get("password"))
                 user.name = form.cleaned_data.get("name", None)
-                user.username = form.cleaned_data.get("username", None)
                 user.is_active = True
                 user.set_email_verified()
                 user.save()

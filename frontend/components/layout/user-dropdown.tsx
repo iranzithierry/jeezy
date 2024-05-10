@@ -46,7 +46,7 @@ export default  function UserDropdown({ user }: { user: User }) {
         <PopoverTrigger asChild>
           <button onClick={() => setOpenPopover(!openPopover)} className="flex items-center justify-center w-8 h-8 overflow-hidden transition-all duration-75 border border-gray-300 rounded-full focus:outline-none active:scale-95 sm:h-9 sm:w-9">
             {/* @ts-ignore */}
-            <Image alt={user?.email ?? user?.name} priority={true} src={user?.image || `https://ui-avatars.com/api/?name=${user?.name?.split(" ")?.[0]?.[0]}${user?.name?.split(" ")?.[1]?.[0]}&color=FFFFFF&background=09090b`} width={40} height={40} />
+            <Image loader={({src}) => src} alt={user?.email ?? user?.name} priority={true} src={user?.image || `https://ui-avatars.com/api/?name=${user?.name?.split(" ")?.[0]?.[0]}${user?.name?.split(" ")?.[1]?.[0]}&color=FFFFFF&background=09090b`} width={40} height={40} />
           </button>
         </PopoverTrigger>
       </Popover>
