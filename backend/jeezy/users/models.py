@@ -47,7 +47,7 @@ class EmailVerification(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="email_verification"
     )
-    token = models.CharField(max_length=100)
+    otp = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     verified_at = models.DateTimeField(null=True, blank=True)
 

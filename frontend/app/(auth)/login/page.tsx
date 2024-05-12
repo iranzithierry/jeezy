@@ -2,20 +2,20 @@ import { Metadata } from "next"
 import { Form } from "@/components/auth/form"
 import { LinkButton } from "@/components/ui/link-button"
 import { redirect } from "next/navigation"
+import axios from "axios"
+import BACKEND_URLS from "@/constants/backend-urls"
+import { loginResponse } from "@/types"
+import { authenticate } from "@/lib/sessions"
 
 export const metadata: Metadata = {
     title: "Login",
 }
 
 export default async function LoginPage() {
-    const handleCallback = async (response: any) => {
-        "use server";
-        redirect('/dashboard')
-    }
     return (
         <>
             <div className="absolute top-0 right-0 p-4 z-20">
-                <LinkButton linkTo="/auth/signup" variant={'outline'}>
+                <LinkButton linkTo="/register" variant={'outline'}>
                     Sign up
                 </LinkButton>
             </div>
@@ -30,10 +30,31 @@ export default async function LoginPage() {
                                 Enter your email below to login  your account
                             </p>
                         </div>
-                        <Form type="signin" callback={handleCallback} />
+                        <Form type="login" submitHandler={submitHandler} />
                     </div>
                 </div>
             </div>
         </>
     )
+}
+
+const submitHandler = async (userData: { email: string, password: string }) => {
+    "use server";
+    try {
+        const { data }: { data: loginResponse } = await axios.post(BACKEND_URLS.LOGIN, userData)
+        if (!data.success) {
+            return { "error": true, "message": data.message }
+        } else {
+            try {
+                await authenticate(data)
+            } catch (error) {
+                console.log(error);
+                return { "error": true, "message": "Something goes wrong with our end." }
+            } finally {
+                return redirect('/dashboard')
+            }
+        }
+    } catch (error: any) {
+        return { "error": true, "message": error?.response?.data?.detail ?? error?.response?.data?.message ?? error?.message }
+    }
 }

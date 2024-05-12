@@ -1,3 +1,4 @@
+from random import randint
 from rest_framework_simplejwt.tokens import RefreshToken
 from jeezy.users.models import User
 
@@ -18,3 +19,7 @@ def generate_token():
     return "".join(
         secrets.choice(string.ascii_letters + string.digits) for _ in range(52)
     )
+
+
+def generate_otp():
+    return''.join(["{}".format(randint(0, 9)) for num in range(0, 6)])

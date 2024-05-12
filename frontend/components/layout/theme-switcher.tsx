@@ -1,35 +1,54 @@
 "use client"
 
 import * as React from "react"
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
+import { cn } from "@/lib/utils"
 import { useTheme } from "next-themes"
-
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { MoonIcon, SunIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
+import { Monitor } from "lucide-react"
 
-export function ThemeSwitcher() {
-    const { setTheme } = useTheme()
+type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
+interface ThemeSwitcherProps extends PopoverTriggerProps { }
+
+export default function ThemeSwitcher({ className }: ThemeSwitcherProps) {
+    const [open, setOpen] = React.useState(false)
+    const { setTheme, theme } = useTheme()
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                    <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="sr-only">Toggle theme</span>
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button size={'sm'} variant="outline" role="combobox" aria-expanded={open} aria-label="Select a team" className={cn("justify-between text-xs capitalize", className)}>
+                    <SunIcon className="mr-2 h-3 w-3" />
+                    {theme}
+                    <CaretSortIcon className="ml-2 h-3 w-3 shrink-0" />
                 </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                    Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                    System
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 w-fit">
+                <Command>
+                    <CommandList>
+                    <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandGroup>
+                            <CommandItem onSelect={() => setTheme('dark')} className="text-xs">
+                                <MoonIcon className="h-3 w-3 mr-2 " />
+                                Dark
+                                <CheckIcon className={cn("ml-2 h-4 w-4", 'dark' == theme ? "opacity-100" : "opacity-0")} />
+                            </CommandItem>
+                            <CommandItem onSelect={() => setTheme('light')} className="text-xs">
+                                <SunIcon className="h-3 w-3 mr-2 " />
+                                Light
+                                <CheckIcon className={cn("ml-2 h-4 w-4", 'light' == theme ? "opacity-100" : "opacity-0")} />
+                            </CommandItem>
+                            <CommandItem onSelect={() => setTheme('system')} className="text-xs">
+                                <Monitor className="h-3 w-3 mr-2 " />
+                                System
+                                <CheckIcon className={cn("ml-2 h-4 w-4", 'system' == theme ? "opacity-100" : "opacity-0")} />
+                            </CommandItem>
+                        </CommandGroup>
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
     )
 }

@@ -48,11 +48,9 @@ class GithubAuthenticateView(APIView):
                 {"message": "Invalid credentials"},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-
         user.email = gh_user["email"]
         user.name = gh_user["name"]
         user.username = gh_user["login"]
-        user.github_id = gh_user["id"],
         user.github_public_access_token = access_token
         user.save()
 

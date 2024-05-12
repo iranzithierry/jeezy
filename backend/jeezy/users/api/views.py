@@ -6,18 +6,21 @@ from jeezy.users.models import User, EmailVerification
 from jeezy.users.forms import EmailSignUpForm, CompleteSignUpForm, EmailLoginForm
 from .serializers import UserSerializer
 from rest_framework.views import APIView
-from .utils import generate_token, get_tokens_for_user
+from .utils import generate_otp, get_tokens_for_user
 
 class EmailSignUpView(APIView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         form = EmailSignUpForm(data=request.data)
         if form.is_valid():
             email = form.cleaned_data["email"]
+            otp = generate_otp()
+            try:
+                send_verification_email.delay(email, otp)
+            except Exception:
+                return Response({"message": "We're sorry, there is an issue sending the one-time password to your email. Please try again later.", "success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             user = User.objects.create_user(email=email, password=None, is_active=False)
-            token = generate_token()
-            EmailVerification.objects.create(user=user, token=token)
-            send_verification_email.delay(user.email, token)
-            return Response({"message": "Email verification link sent", "success": True},status=status.HTTP_200_OK,)
+            EmailVerification.objects.create(user=user, otp=otp)
+            return Response({"message": f"An email with a one-time password has been sent to {email}.", "success": True},status=status.HTTP_200_OK,)
         return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SignInView(APIView):
@@ -54,15 +57,15 @@ class SignInView(APIView):
 class EmailVerificationView(generics.CreateAPIView):
     def create(self, request: Request, *args, **kwargs) -> Response:
         form = CompleteSignUpForm(data=request.data)
-        token = request.data.get("token")
-        if not token:
-            return Response({"message": "No token provided", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+        otp = request.data.get("otp")
+        if not otp:
+            return Response({"message": "Please provide an OTP code to verify your email.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
         if form.is_valid():
             try:
-                verification = EmailVerification.objects.get(token=token)
+                verification = EmailVerification.objects.get(otp=otp)
                 user = verification.user
             except EmailVerification.DoesNotExist:
-                return Response({"message": "Invalid token", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "The OTP code you provided seems to be invalid. Please check and try again.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
             if  not verification.verified():
                 # email verification doer
                 user.set_password(form.cleaned_data.get("password"))

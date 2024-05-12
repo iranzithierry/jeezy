@@ -3,14 +3,7 @@ import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers"
 import { Toaster } from 'sonner'
-// import { Analytics } from "@vercel/analytics/react"
-
 import { displayFont, monoFont } from "@/lib/fonts";
-
-// import { Chivo } from 'next/font/google'
-// import { Rubik } from 'next/font/google'
-// const rubik = Rubik({ subsets: ['latin'], display: 'swap', variable: '--font-rubik', })
-// const chivo = Chivo({ subsets: ['latin'], display: 'swap', variable: '--font-chivo', })
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
@@ -33,7 +26,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <main>{children}</main>
         </ThemeProvider>
-        {/* <Analytics /> */}
       </body>
     </html>
   );

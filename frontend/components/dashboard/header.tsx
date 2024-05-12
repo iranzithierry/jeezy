@@ -1,39 +1,64 @@
 "use client";
 import React from "react";
-import { Menu, Search, } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { BellDot, Menu, Plus, } from "lucide-react"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import Nav from "./nav"
-import UserDropdown from '@/components/layout/user-dropdown';
-import { useAuth } from "@/context/auth";
+import NavItem from "./nav"
+import UserMenu from '@/components/layout/user-menu';
+import Logo from "../logo";
 
-export default function Header() {
-    const { session } = useAuth()
+export default function Header({ session, logout }: { session: any, logout: Function }) {
     return (
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+        <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+            <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+                <Logo />
+                <NavItem />
+            </nav>
             <Sheet>
                 <SheetTrigger asChild>
-                    <Button variant="outline" size="icon" className="shrink-0 md:hidden">
-                        <Menu className="w-5 h-5" />
-                        <span className="sr-only">Toggle menu</span>
+                    <Button variant="outline" size="icon" className="shrink-0 md:hidden" >
+                        <Menu className="h-5 w-5" />
+                        <span className="sr-only">Toggle navigation menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="flex flex-col">
-                    <Nav />
+                <SheetContent side="left">
+                    <nav className="grid gap-6 text-lg font-medium">
+                        <Logo />
+                        <NavItem />
+                    </nav>
                 </SheetContent>
             </Sheet>
-            <div className="flex-1 w-full">
-                <form>
-                    <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input type="search" placeholder="Search project/deployments..." className="w-full pl-8 shadow-none appearance-none bg-background md:w-2/3 lg:w-1/3" />
-                    </div>
-                </form>
+            <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+                <div className="ml-auto flex-1 sm:flex-initial space-x-2">
+                    <Button>
+                        <Plus className="h-5 w-5" />
+                        <span className="sr-only">Create New</span>
+                        New
+                    </Button>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="outline">
+                                <BellDot className="h-5 w-5" />
+                                <span className="sr-only">Toggle notifications</span>
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            <Tabs defaultValue="account" className="w-[400px]">
+                                <TabsList>
+                                    <TabsTrigger value="account">Account</TabsTrigger>
+                                    <TabsTrigger value="password">Password</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="account">Make changes to your account here.</TabsContent>
+                                <TabsContent value="password">Change your password here.</TabsContent>
+                            </Tabs>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+                <UserMenu user={session.user} logout={logout} />
             </div>
-            <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
-                <UserDropdown user={session?.user} />
-            </React.Suspense>
         </header>
     )
 }
