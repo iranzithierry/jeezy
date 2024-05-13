@@ -36,8 +36,9 @@ export async function authenticate(data: any) {
     cookies().set({ name: COOKIE_NAMES.REFRESH_TOKEN, value: data.tokens.refresh, maxAge: COOKIE_TIME.REFRESH_TOKEN, path: "/", httpOnly: true })
   } catch (error: any) {
     throw new Error(error.message)
+  } finally { 
+    createSession({ user: data.user }) 
   }
-  finally { createSession({ user: data.user }) }
 }
 
 export async function logout() {

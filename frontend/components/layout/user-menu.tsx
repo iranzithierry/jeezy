@@ -11,10 +11,19 @@ import ThemeSwitcher from "./theme-switcher";
 export default function UserMenu({ user, logout }: { user: User, logout: Function }) {
   const [openPopover, setOpenPopover] = useState(false);
   if (!user) return null
+  const getNameAbreviation = (name: string) => {
+    const splittedName = name.split(" ")
+    if (splittedName.length > 1) {
+      return name?.split(" ")?.[0]?.[0] + name?.split(" ")?.[1]?.[0]
+    } else {
+      return name[0]
+    }
+
+  }
   return (
     <div className="relative inline-block text-left">
       <Popover>
-        <PopoverContent>
+        <PopoverContent align="end">
           <div className="px-4 py-2">
             <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
               {user?.name}
@@ -26,25 +35,26 @@ export default function UserMenu({ user, logout }: { user: User, logout: Functio
           <div className="py-2">
             <Separator />
           </div>
-          <div>
+          <div className="space-y-1">
             <Button variant={'ghost'} className="w-full flex justify-between">
               <p className="text-sm">Dashboard</p>
               <LayoutDashboard className="w-4 h-4" />
             </Button>
-            <Button variant={'ghost'} className="w-full flex justify-between" onClick={() => logout()}>
+            <div className="items-center whitespace-nowrap rounded-md text-sm font-medium h-10 px-4 py-2 w-full flex justify-between">
+              <p className="text-sm">Theme</p>
+              <ThemeSwitcher  className="-mr-1"/>
+            </div>
+            <Separator/>
+            <Button variant={'ghost'} className="w-full flex justify-between hover:bg-destructive hover:text-white" onClick={() => logout()}>
               <p className="text-sm">Logout</p>
               <LogOut className="w-4 h-4" />
             </Button>
-            <div className="items-center whitespace-nowrap rounded-md text-sm font-medium h-10 px-4 py-2 w-full flex justify-between">
-              <p className="text-sm">Theme</p>
-              <ThemeSwitcher />
-            </div>
           </div>
         </PopoverContent>
         <PopoverTrigger asChild>
           <button onClick={() => setOpenPopover(!openPopover)} className="flex items-center justify-center w-8 h-8 overflow-hidden transition-all duration-75 border border-gray-300 rounded-full focus:outline-none active:scale-95 sm:h-9 sm:w-9">
             {/* @ts-ignore */}
-            <Image alt={user?.email ?? user?.name} priority={true} src={user?.image || `https://ui-avatars.com/api/?name=${user?.name?.split(" ")?.[0]?.[0]}${user?.name?.split(" ")?.[1]?.[0]}&color=FFFFFF&background=09090b`} width={40} height={40} />
+            <Image alt={user?.email ?? user?.name} loader={(({ src }) => src)} priority={true} src={user?.image || `https://ui-avatars.com/api/?name=${getNameAbreviation(user.name)}&color=FFFFFF&background=09090b`} width={40} height={40} />
           </button>
         </PopoverTrigger>
       </Popover>

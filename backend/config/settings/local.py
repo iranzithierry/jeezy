@@ -66,3 +66,4 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP=True

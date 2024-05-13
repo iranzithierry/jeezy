@@ -10,10 +10,12 @@ import { SpinnerIcon } from "../ui/icons"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 interface FormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean, submitHandler: Function } { }
 
 export function Form({ className, type = "signup", withGithub = true, submitHandler, ...props }: FormProps) {
+  const router = useRouter()
   const [submitting, setSubmitting] = React.useState<boolean>(false)
   const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit = async (data: any) => {
@@ -21,6 +23,7 @@ export function Form({ className, type = "signup", withGithub = true, submitHand
     const response = await submitHandler(data)
     if (response) {
       const { error, message }: { error?: string, message?: string} = response
+      if(message == "Done") return router.push('/dashboard')
       error ? toast.error(message) : toast.success(message)
     }
     setSubmitting(false)

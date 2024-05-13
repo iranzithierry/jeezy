@@ -1,7 +1,6 @@
 import { Metadata } from "next"
 import { Form } from "@/components/auth/form"
 import { LinkButton } from "@/components/ui/link-button"
-import { redirect } from "next/navigation"
 import axios from "axios"
 import BACKEND_URLS from "@/constants/backend-urls"
 import { loginResponse } from "@/types"
@@ -51,7 +50,7 @@ const submitHandler = async (userData: { email: string, password: string }) => {
                 console.log(error);
                 return { "error": true, "message": "Something goes wrong with our end." }
             } finally {
-                return redirect('/dashboard')
+                return { "error": false, "message": "Done" }
             }
         }
     } catch (error: any) {

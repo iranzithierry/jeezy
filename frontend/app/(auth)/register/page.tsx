@@ -74,8 +74,9 @@ const otpSubmitHandler = async (userData: { name: string, password: string, otp:
                 await authenticate(data)
             } catch (error) {
                 return { "error": true, "message": "Something goes wrong with our end." }
+            } finally {
+                return { "error": false, "message": "Done" }
             }
-            redirect('/dashboard')
         }
     } catch (error: any) {
         return { "error": true, "message": error?.response?.data?.detail ?? error?.response?.data?.message ?? error?.response?.data?.email ?? error?.message }

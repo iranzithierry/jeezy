@@ -1,5 +1,4 @@
 import Header from '@/components/dashboard/header'
-import Sidebar from '@/components/dashboard/sidebar'
 import { getSession, logout } from '@/lib/sessions';
 import React, { Suspense } from 'react'
 
@@ -18,7 +17,7 @@ export default async function DashboardLayout({ children, }: { children: React.R
         <Suspense fallback="...">
           <Header session={await checkSession()} logout={handleLogout} />
         </Suspense>
-        <section className="flex flex-col flex-1 p-4 h-full dark:bg-gray-800/40">
+        <section className="flex flex-col flex-1 p-4 h-full dark:bg-muted">
           {children}
         </section>
       </div>

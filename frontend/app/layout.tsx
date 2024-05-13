@@ -22,9 +22,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn("bg-background font-sans antialiased", displayFont.variable, monoFont.variable)}>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-center" />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <main>{children}</main>
+          {children}
         </ThemeProvider>
       </body>
     </html>

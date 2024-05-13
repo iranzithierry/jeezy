@@ -5,7 +5,7 @@ export default function Loading() {
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1">
-        <main className="flex-1 bg-gray-100 px-4 py-8 dark:bg-gray-800">
+        <main className="flex-1 bg-gray-100 px-4 py-8 dark:bg-muted">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-4">
               <Skeleton className="h-40 rounded-lg" />
@@ -48,7 +48,7 @@ export default function Loading() {
           </div>
         </main>
       </div>
-      <footer className="flex flex-col items-center justify-center gap-4 border-t bg-white px-4 py-8 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400 sm:flex-row sm:justify-between">
+      <footer className="flex flex-col items-center justify-center gap-4 border-t bg-white px-4 py-8 text-sm text-gray-500 dark:border-gray-800 dark:bg-background dark:text-gray-400 sm:flex-row sm:justify-between">
         <Skeleton className="h-4 w-32" />
         <div className="flex items-center gap-4">
           <Skeleton className="h-4 w-20" />
