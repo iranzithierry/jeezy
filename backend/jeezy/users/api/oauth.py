@@ -114,13 +114,15 @@ class GithubInstallationView(generics.CreateAPIView):
                     pass
                 if  len(new_request['repositories']) < 1:
                     return Response({"message": "You must have atleast one repository to github", "success": False, "source": "Github" },  status=status.HTTP_500_INTERNAL_SERVER_ERROR )
-                user.github_installaton_id = installation_id
+                
                 user.installed_github = True
+                user.github_installaton_id = installation_id
                 user.github_private_access_token = response['token']
-                user.username = new_request['repositories'][0]['owner']['login']
+
+                if  user.username is None:
+                    user.username = new_request['repositories'][0]['owner']['login']
                 user.save()
-                response = response['token']
-            return Response({"message": response, "user": UserSerializer(user).data, "success": True if str(data.status_code).startswith("2") else False, "source": "Github" },  status=data.status_code )
+            return Response({"message": "Successifully connected with github", "user": UserSerializer(user).data, "success": True if str(data.status_code).startswith("2") else False, "source": "Github" },  status=data.status_code )
         else:
             return Response({"message": "No installation id provided", "success": False}, status=status.HTTP_400_BAD_REQUEST)
 

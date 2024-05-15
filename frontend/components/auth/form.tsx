@@ -10,20 +10,28 @@ import { SpinnerIcon } from "../ui/icons"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 interface FormProps extends React.HTMLAttributes<HTMLDivElement> { type?: string, withGithub?: boolean, submitHandler: Function } { }
 
 export function Form({ className, type = "signup", withGithub = true, submitHandler, ...props }: FormProps) {
   const router = useRouter()
+  const params = useSearchParams();
+  
   const [submitting, setSubmitting] = React.useState<boolean>(false)
   const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit = async (data: any) => {
     setSubmitting(true)
     const response = await submitHandler(data)
     if (response) {
-      const { error, message }: { error?: string, message?: string} = response
-      if(message == "Done") return router.push('/dashboard')
+      const { error, message }: { error?: string, message?: string } = response
+      if (message == "Done") {
+        let redirectTo = params.get("redirect_back")
+        if (redirectTo) {
+          return router.push(redirectTo)
+        }
+        return router.push('/dashboard')
+      }
       error ? toast.error(message) : toast.success(message)
     }
     setSubmitting(false)
@@ -36,7 +44,7 @@ export function Form({ className, type = "signup", withGithub = true, submitHand
         <div className="grid gap-2">
           {type != "complete_registration" && (
             <div className="grid gap-1">
-              <Label  htmlFor="email">
+              <Label htmlFor="email">
                 Email
               </Label>
               <Input invalid={isError(errors.email?.message)} id="email" placeholder="email" autoCapitalize="none" autoComplete="email" autoCorrect="off" disabled={submitting}

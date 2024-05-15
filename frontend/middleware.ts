@@ -6,8 +6,8 @@ export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
     const session = await getSession()
     
-    if (path.startsWith('/dashboard') && !session?.user) {
-        return NextResponse.redirect(new URL('/login', request.nextUrl))
+    if (path.startsWith('/dashboard') && !session?.user) {  
+        return NextResponse.redirect(new URL(`/login?redirect_back=${path}`, request.nextUrl))
     }
     if(path.startsWith('/refresh')){
         const redirectTo = request.nextUrl.searchParams.get("redirect_back")     
