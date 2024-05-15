@@ -18,9 +18,7 @@ export default async function Dashboard() {
             <div className="max-w-6xl w-full mx-auto grid gap-2">
                 <h1 className="font-semibold text-3xl">Overview</h1>
             </div>
-            <div className="grid gap-6 max-w-6xl w-full mx-auto">
-                <ProjectsTable projects={projects} />
-            </div>
+            <ProjectsTable projects={projects} />
         </main>
     )
 

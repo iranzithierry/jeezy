@@ -2,11 +2,12 @@ import Link from "next/link"
 import { Metadata } from "next"
 import { LinkButton } from "@/components/ui/link-button"
 import EmailForm from "@/components/auth/email-form"
-import { baseResponse, loginResponse } from "@/types"
+import { LoginResponse } from "@/types/auth"
 import axios from "axios"
 import BACKEND_URLS from "@/constants/backend-urls"
 import { authenticate } from "@/lib/sessions"
 import { redirect } from "next/navigation"
+import { BaseResponse } from "@/types/http"
 
 export const metadata: Metadata = {
     title: "Sign up",
@@ -53,7 +54,7 @@ export default function SignUp() {
 const submitHandler = async (userData: { email: string }) => {
     "use server";
     try {
-        const { data }: { data: baseResponse } = await axios.post(BACKEND_URLS.SIGNUP, userData)
+        const { data }: { data: BaseResponse } = await axios.post(BACKEND_URLS.SIGNUP, userData)
         if (!data.success) {
             return { "error": true, "message": data.message }
         } else {
@@ -66,7 +67,7 @@ const submitHandler = async (userData: { email: string }) => {
 const otpSubmitHandler = async (userData: { name: string, password: string, otp: string }) => {
     "use server";
     try {
-        const { data }: { data: loginResponse } = await axios.post(BACKEND_URLS.EMAIL_VERIFICATION, userData)
+        const { data }: { data: LoginResponse } = await axios.post(BACKEND_URLS.EMAIL_VERIFICATION, userData)
         if (!data.success) {
             return { "error": true, "message": data.message }
         } else {

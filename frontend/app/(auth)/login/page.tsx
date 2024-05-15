@@ -3,7 +3,7 @@ import { Form } from "@/components/auth/form"
 import { LinkButton } from "@/components/ui/link-button"
 import axios from "axios"
 import BACKEND_URLS from "@/constants/backend-urls"
-import { loginResponse } from "@/types"
+import { LoginResponse } from "@/types/auth"
 import { authenticate } from "@/lib/sessions"
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default async function LoginPage() {
 const submitHandler = async (userData: { email: string, password: string }) => {
     "use server";
     try {
-        const { data }: { data: loginResponse } = await axios.post(BACKEND_URLS.LOGIN, userData)
+        const { data }: { data: LoginResponse } = await axios.post(BACKEND_URLS.LOGIN, userData)
         if (!data.success) {
             return { "error": true, "message": data.message }
         } else {
