@@ -17,7 +17,7 @@ export type Deployment  = {
     commit:          string;
     branch:          string;
     status:          string;
-    deployed_at:     Date;
+    deployed_at:     string;
     deployment_logs: string;
     build_command:   string;
     build_output:    string;

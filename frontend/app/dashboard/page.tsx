@@ -6,6 +6,10 @@ import useAxiosAuth from '@/lib/hooks/use-axios-auth'
 import { AxiosError } from 'axios'
 import { redirect } from 'next/navigation'
 
+export const metadata: Metadata = {
+    title: "Dashboard",
+}
+
 export default async function Dashboard() {
     const projects = await getProjects()
 

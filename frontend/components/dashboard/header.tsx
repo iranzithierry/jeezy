@@ -38,7 +38,7 @@ export default function Header({ session, logout }: { session: any, logout: Func
                     </Button>
                     <NotificationMenu/>
                 </div>
-                <UserMenu user={session.user} logout={logout} />
+                <UserMenu user={session?.user} logout={logout} />
             </div>
         </header>
     )
