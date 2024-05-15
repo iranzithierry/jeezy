@@ -6,9 +6,7 @@ export async function deleteCookie(key: string) {
 }
 export async function getCookie(key: string) {
   const cookie = cookies().get(key)
-  if (cookie) {
-    return cookie.value
-  }
+  if (cookie) return cookie.value
   return null
 }
 

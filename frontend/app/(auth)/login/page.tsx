@@ -47,7 +47,6 @@ const submitHandler = async (userData: { email: string, password: string }) => {
             try {
                 await authenticate(data)
             } catch (error) {
-                console.log(error);
                 return { "error": true, "message": "Something goes wrong with our end." }
             } finally {
                 return { "error": false, "message": "Done" }

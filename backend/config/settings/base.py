@@ -93,12 +93,12 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
     "drf_spectacular",
-    "rest_framework_simplejwt.token_blacklist",
     # "daphne",
 ]
 
 LOCAL_APPS = [
     "jeezy.users",
+    "jeezy.projects",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -307,5 +307,6 @@ SPECTACULAR_SETTINGS = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=8),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
+    "SIGNING_KEY": env("APP_JWT_SIGNING_KEY")
 }
 APPEND_SLASH = True

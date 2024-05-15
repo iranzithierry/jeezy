@@ -11,42 +11,20 @@ import { Badge } from "../ui/badge"
 import { LinkButton } from "../ui/link-button"
 import { timeSince } from "@/lib/utils"
 import Link from "next/link"
+import { toast } from "sonner"
+import { ProjectsResponse } from "@/types/projects-response"
+import { isEmpty } from "lodash"
 
-const data: Project[] = [
+export const columns: ColumnDef<ProjectsResponse>[] = [
+    // {
+    //     accessorKey: "status",
+    //     header: "Status",
+    //     cell: ({ row }: any) => (
+    //         <Badge variant={row.getValue("status") == "deployed" ? 'success' : row.getValue("status") == "failed" ? 'destructive' : 'default'}>{row.getValue("status")}</Badge>
+    //     ),
+    // },
     {
-        id: "1",
-        status: "failed",
-        projectName: "Jeezy",
-        stack: 'React',
-        lastDeployed: Date.now() - 75 * 24 * 60 * 60
-    },
-    {
-        id: "2",
-        status: "deployed",
-        projectName: "eSound",
-        stack: 'HTML',
-        lastDeployed: Date.now() - 24 * 60 * 60 * 60 * 60
-    },
-]
-
-export type Project = {
-    id: string
-    status: "deployed" | "failed" | "pending"
-    projectName: string
-    stack: 'HTML' | 'React'
-    lastDeployed: number
-}
-
-export const columns: ColumnDef<Project>[] = [
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }: any) => (
-            <Badge variant={row.getValue("status") == "deployed" ? 'success' : row.getValue("status") == "failed" ? 'destructive' : 'default'}>{row.getValue("status")}</Badge>
-        ),
-    },
-    {
-        accessorKey: "projectName",
+        accessorKey: "name",
         header: ({ column }: any) => {
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} >
@@ -55,10 +33,10 @@ export const columns: ColumnDef<Project>[] = [
                 </Button>
             )
         },
-        cell: ({ row }: any) => <LinkButton variant={'ghost'}>{row.getValue("projectName")}</LinkButton>,
+        cell: ({ row }: any) => <LinkButton variant={'ghost'}>{row.getValue("name")}</LinkButton>,
     },
     {
-        accessorKey: "stack",
+        accessorKey: "technology_used",
         header: ({ column }: any) => {
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} >
@@ -67,10 +45,10 @@ export const columns: ColumnDef<Project>[] = [
                 </Button>
             )
         },
-        cell: ({ row }: any) => <LinkButton variant={'ghost'}>{row.getValue("stack")}</LinkButton>,
+        cell: ({ row }: any) => <LinkButton variant={'ghost'}>{row.getValue("technology_used")}</LinkButton>,
     },
     {
-        accessorKey: "lastDeployed",
+        accessorKey: "last_deployed",
         header: ({ column }: any) => {
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} >
@@ -79,7 +57,7 @@ export const columns: ColumnDef<Project>[] = [
                 </Button>
             )
         },
-        cell: ({ row }: any) => <div className="h-10 px-4 py-2">{timeSince(row.getValue("lastDeployed"))}</div>,
+        cell: ({ row }: any) => <div className="h-10 px-4 py-2">{timeSince(row.getValue("last_deployed"))}</div>,
     },
     {
         id: "actions",
@@ -119,14 +97,14 @@ export const columns: ColumnDef<Project>[] = [
     },
 ]
 
-export function ProjectsTable() {
+export function ProjectsTable({ projects = [] }: { projects: ProjectsResponse[] }) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
 
     const table = useReactTable({
-        data, columns, onSortingChange: setSorting, onColumnFiltersChange: setColumnFilters, getCoreRowModel: getCoreRowModel(), getPaginationRowModel: getPaginationRowModel(), getSortedRowModel: getSortedRowModel(), getFilteredRowModel: getFilteredRowModel(), onColumnVisibilityChange: setColumnVisibility, onRowSelectionChange: setRowSelection,
+        data: projects, columns, onSortingChange: setSorting, onColumnFiltersChange: setColumnFilters, getCoreRowModel: getCoreRowModel(), getPaginationRowModel: getPaginationRowModel(), getSortedRowModel: getSortedRowModel(), getFilteredRowModel: getFilteredRowModel(), onColumnVisibilityChange: setColumnVisibility, onRowSelectionChange: setRowSelection,
         state: { sorting, columnFilters, columnVisibility, rowSelection, },
     })
 
@@ -134,9 +112,9 @@ export function ProjectsTable() {
         <div className="grid gap-6 max-w-6xl w-full mx-auto">
             <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
                 <Input placeholder="Search Project..."
-                    value={(table.getColumn("projectName")?.getFilterValue() as string) ?? ""}
+                    value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("projectName")?.setFilterValue(event.target.value)
+                        table.getColumn("name")?.setFilterValue(event.target.value)
                     } />
             </div>
             <div className="rounded-md border">

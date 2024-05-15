@@ -1,11 +1,12 @@
+import Footer from '@/components/dashboard/footer';
 import Header from '@/components/dashboard/header'
 import { getSession, logout } from '@/lib/sessions';
 import React, { Suspense } from 'react'
 
 export default async function DashboardLayout({ children, }: { children: React.ReactNode; }) {
   async function checkSession() {
-    const session = await getSession("session")
-    return session
+    const session  = await getSession()
+    return  session;
   }
   async function handleLogout() {
     "use server";
@@ -20,6 +21,7 @@ export default async function DashboardLayout({ children, }: { children: React.R
         <section className="flex flex-col flex-1 p-4 h-full dark:bg-muted">
           {children}
         </section>
+        <Footer/>
       </div>
     </div >
   )

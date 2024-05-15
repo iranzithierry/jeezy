@@ -5,30 +5,23 @@ import COOKIE_NAMES from '@/constants/cookies-names'
 import COOKIE_TIME from '@/constants/cookies-time'
 import { deleteCookie } from './cookies'
 import { redirect } from 'next/navigation'
+import { NextRequest, NextResponse } from 'next/server'
+import BACKEND_URLS from '@/constants/backend-urls'
 
-export async function createSession(payload: object, key = "session", expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000) {
-  const session = await encrypt(payload)
+const getCookieSessionValue = () => cookies().get("session")?.value;
 
-  cookies().set(key, session, { httpOnly: true, secure: true, expires: expiresAt, sameSite: 'lax', path: '/', })
+export async function createSession(payload: object) {
+  const session = await encrypt(payload, COOKIE_TIME.USER_SESSION_STRING)
+  cookies().set("session", session, { httpOnly: true, secure: true, maxAge: COOKIE_TIME.USER_SESSION, sameSite: 'lax', path: '/', })
 }
 
 
-export async function updateSession(key = "session", expiresAt = Date.now() + 75 * 24 * 60 * 60) {
-  const session = cookies().get(key)?.value
-  const payload = await decrypt(session)
-
-  if (!session || !payload) {
+export async function getSession() {
+  try {
+    return await decrypt(getCookieSessionValue())
+  } catch (error) {
     return null
   }
-  const expires = new Date(expiresAt)
-  cookies().set(key, session, { httpOnly: true, secure: true, expires: expires, sameSite: 'lax', path: '/', })
-}
-export async function getSession(key = "session") {
-  const cookie = cookies().get(key)?.value
-  try {
-    const session = await decrypt(cookie)
-    return session
-  } catch (error) { return null }
 }
 export async function authenticate(data: any) {
   try {
@@ -36,8 +29,8 @@ export async function authenticate(data: any) {
     cookies().set({ name: COOKIE_NAMES.REFRESH_TOKEN, value: data.tokens.refresh, maxAge: COOKIE_TIME.REFRESH_TOKEN, path: "/", httpOnly: true })
   } catch (error: any) {
     throw new Error(error.message)
-  } finally { 
-    createSession({ user: data.user }) 
+  } finally {
+    createSession({ user: data.user })
   }
 }
 
@@ -49,4 +42,43 @@ export async function logout() {
   } catch (error: any) {
     throw new Error(error.message)
   } finally { redirect('/login') }
+}
+export async function updateAccessToken(request: NextRequest) {
+  const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS_TOKEN)?.value
+  const currentRefreshToken = request.cookies.get(COOKIE_NAMES.REFRESH_TOKEN)?.value
+  const res = NextResponse.next()
+
+  if (accessToken) {
+    const error = await decryptionError(accessToken)
+    if (error) {
+      res.cookies.delete(COOKIE_NAMES.ACCESS_TOKEN)
+    } else { return }
+  }
+  if (!currentRefreshToken) {
+    res.cookies.delete("session")
+    return res
+  }
+  const response = await fetch(BACKEND_URLS.GET_NEW_ACCESS_TOKEN, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh: currentRefreshToken })
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    res.cookies.delete(COOKIE_NAMES.REFRESH_TOKEN)
+    return res;
+  }
+  if ('access' in data) {
+    res.cookies.set({ name: COOKIE_NAMES.ACCESS_TOKEN, value: data.access, secure: true, maxAge: COOKIE_TIME.ACCESS_TOKEN, path: "/", httpOnly: true, })
+  }
+  return res
+
+}
+
+async function decryptionError(value: any) {
+  try {
+    await decrypt(value)
+    return false
+  } catch (error) {
+    return true
+  }
 }
