@@ -28,7 +28,7 @@ export default function MaintenancePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 md:gap-6 text-center sm:text-left">
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">Features</h2>
-            <ul className="list-disc pl-6 text-gray-500 dark:text-gray-400">
+            <ul className="list-none sm:list-disc pl-6 text-gray-500 dark:text-gray-400">
               <li>Built with Next.js</li>
               <li>Integrated with Django backend</li>
               <li>Responsive and accessible design</li>
