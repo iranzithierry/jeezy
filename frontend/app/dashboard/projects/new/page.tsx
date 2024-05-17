@@ -1,12 +1,16 @@
 import React from 'react'
-import { CardTitle, CardDescription, CardHeader, CardContent, Card, CardFooter } from "@/components/ui/card"
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { PlusIcon, TrashIcon } from 'lucide-react'
+import { CardTitle, CardDescription, CardHeader, Card } from "@/components/ui/card"
+import ProjectSettings from '@/components/dashboard/forms/project-settings'
+import EnvSettings from '@/components/dashboard/forms/env-settings'
+import BuildSettings from '@/components/dashboard/forms/build-settings'
+import BACKEND_URLS from '@/constants/backend-urls'
+import useAxiosAuth from '@/lib/hooks/use-axios-auth'
+import { AxiosError } from 'axios'
+import { BaseResponse } from '@/types/http'
+import { extractErrorValues } from '@/lib/utils'
 
-export default  function Page({ searchParams }: { searchParams: { repository: string, project: string } }) {
-   
+export default function Page({ searchParams }: { searchParams: { repository: string, project: string } }) {
+
     return (
         <div className="grid gap-6">
             <Card>
@@ -14,76 +18,31 @@ export default  function Page({ searchParams }: { searchParams: { repository: st
                     <CardTitle>Project Settings</CardTitle>
                     <CardDescription>Configure your project settings.</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <form className="grid gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="project-name">Project Name</Label>
-                            <Input id="project-name" placeholder="Enter project name"  value={searchParams.project}/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="git-repo">Git Repository</Label>
-                            <Input id="git-repo" placeholder="Enter Git repository URL"value={searchParams.repository} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="root-dir">Root Directory</Label>
-                            <Input id="root-dir" placeholder="Enter root directory" />
-                        </div>
-                    </form>
-                </CardContent>
-                <CardFooter className="border-t p-6">
-                    <Button>Save</Button>
-                </CardFooter>
+                <ProjectSettings submitHandler={submitHandler} project={searchParams.project} repository={searchParams.repository} />
             </Card>
             <Card>
                 <CardHeader>
                     <CardTitle>Environment Variables</CardTitle>
                     <CardDescription>Set environment variables for your project.</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <form className="flex flex-col gap-4">
-                        <div className="grid grid-cols-[1fr_1fr_auto] gap-4">
-                            <Input placeholder="Name" />
-                            <Input placeholder="Value" />
-                            <div className='flex gap-1'>
-                                <Button size="icon" variant="outline">
-                                    <PlusIcon className="w-5 h-5" />
-                                </Button>
-                                <Button size="icon" variant="destructive">
-                                    <TrashIcon className="w-5 h-5" />
-                                </Button>
-                            </div>
-                        </div>
-                    </form>
-                </CardContent>
-                <CardFooter className="border-t p-6">
-                    <Button>Save</Button>
-                </CardFooter>
+                <EnvSettings submitHandler={submitHandler} />
             </Card>
             <Card>
                 <CardHeader>
                     <CardTitle>Build Settings</CardTitle>
                     <CardDescription>Configure your build settings.</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <form className="grid gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="build-command">Build Command</Label>
-                            <Input id="build-command" placeholder="Enter build command" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="output-dir">Output Directory</Label>
-                            <Input id="output-dir" placeholder="Enter output directory" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="install-command">Install Command</Label>
-                            <Input id="install-command" placeholder="Enter install command" />
-                        </div>
-                    </form>
-                </CardContent>
-                <CardFooter className="border-t p-6">
-                    <Button>Save</Button>
-                </CardFooter>
+                <BuildSettings submitHandler={submitHandler} />
             </Card>
         </div>
     )
+}
+const submitHandler = async (formData: any, type: string) => {
+    "use server";
+    try {
+        const { data }: { data: BaseResponse } = await useAxiosAuth.post(BACKEND_URLS.CREATE_PROJECTS+type, formData)
+        return data;
+    } catch (error: any) {
+        return { "success": false, "message": error?.response?.data?.detail ??  extractErrorValues(error?.response?.data) ?? error?.response?.data?.message ?? error?.message }
+    }
 }

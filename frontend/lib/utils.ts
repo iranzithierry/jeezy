@@ -17,5 +17,8 @@ export function extractErrorValues(response: any) {
       values.push(response[key][0].replace("This field", `The ${key} field`));
     }
   }
+  if (values.length == 0) {
+    return null
+  }
   return values;
 }

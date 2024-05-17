@@ -4,16 +4,17 @@ import { getSession, updateAccessToken } from './lib/sessions';
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
-    const session = await getSession()
-    
-    if (path.startsWith('/dashboard') && !session?.user) {  
-        return NextResponse.redirect(new URL(`/login?redirect_back=${path}`, request.nextUrl))
+    if(!process.env.MAINTENANCE){
+        const session = await getSession()
+        if (path.startsWith('/dashboard') && !session?.user) {  
+            return NextResponse.redirect(new URL(`/login?redirect_back=${path}`, request.nextUrl))
+        }
+        if(path.startsWith('/refresh')){
+            const redirectTo = request.nextUrl.searchParams.get("redirect_back")     
+            return NextResponse.redirect(new URL(redirectTo ?? path, request.nextUrl))
+        }
+        return await updateAccessToken(request)
     }
-    if(path.startsWith('/refresh')){
-        const redirectTo = request.nextUrl.searchParams.get("redirect_back")     
-        return NextResponse.redirect(new URL(redirectTo ?? path, request.nextUrl))
-    }
-    return await updateAccessToken(request)
 }
 
 export const config = {

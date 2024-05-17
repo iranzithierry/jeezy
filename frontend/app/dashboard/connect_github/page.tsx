@@ -38,7 +38,7 @@ export async function fetchRepositories() {
   } catch (err) {
       const error = err as AxiosError
       if (error?.response?.status === 401) {
-          return redirect('/refresh?redirect_back=/dashboard')
+          return redirect('/refresh?redirect_back=/dashboard/connect_github')
       }
       // @ts-ignore
       return { success: false, message: error.response?.data?.message ?? error.message }

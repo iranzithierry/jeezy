@@ -26,17 +26,18 @@ class ProjectSerializer(serializers.ModelSerializer):
             "visibility",
             "last_deployed",
             "collaborators",
+            "root_directory",
+            "git_repository",
             "technology_used",
             "generated_domain",
             "cloned_repo_path",
-            "repository_source",
             "active_deployment",
             "deployments"
         )
 
-    def to_representation(self, instance: Project):
-        representation = super().to_representation(instance)
-        # representation["deployments"] = instance.deployments.main
-        return representation
+    # def to_representation(self, instance: Project):
+    #     representation = super().to_representation(instance)
+    #     # representation["deployments"] = instance.deployments.main
+    #     return representation
 
 
