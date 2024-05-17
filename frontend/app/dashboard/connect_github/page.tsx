@@ -25,7 +25,7 @@ export default async function Page() {
   )
 }
 
-export async function fetchRepositories() {
+async function fetchRepositories() {
   "use server";
   try {
       const { data }: { data: BaseResponse } = await axiosAuth.get(BACKEND_URLS.GET_USER_GITHUB_REPOSITORIES)

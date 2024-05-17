@@ -37,7 +37,7 @@ export default function ImportList({ search, fetchRepositories }: { search?: Fun
             }
         }
         getRepositories()
-    }, [])
+    })
     return (
         <section className="w-full max-w-3xl mx-auto">
             <div className="border rounded-lg shadow-sm dark:border-gray-800">

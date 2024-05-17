@@ -9,12 +9,12 @@ import { LoginResponse } from '@/types/auth';
 
 export default function Page({ searchParams }: { searchParams: { installation_id: string } }) {
     return (
-        <ResultPage ConnectGithub={ConnectGithub} installation_id={searchParams.installation_id} />
+        <ResultPage connectGithub={connectGithub} installation_id={searchParams.installation_id} />
     );
 }
 
 
-export async function ConnectGithub(installationId: string) {
+async function connectGithub(installationId: string) {
     "use server";
     try {
         const { data }: { data: LoginResponse } = await axiosAuth.post(BACKEND_URLS.GITHUB_INSTALLATION, JSON.stringify({ "installation_id": installationId }))

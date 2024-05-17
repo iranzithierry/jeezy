@@ -1,11 +1,11 @@
 import NextAuth, { type DefaultSession } from 'next-auth'
 import GitHub from 'next-auth/providers/github'
-import { loginResponse } from './types/auth';
 import { cookies } from 'next/headers';
 import { createSession } from './lib/sessions';
 import BACKEND_URLS from './constants/backend-urls';
 import COOKIE_NAMES from './constants/cookies-names';
 import COOKIE_TIME from './constants/cookies-time';
+import { LoginResponse } from './types/auth';
 
 export const { handlers: { GET, POST }, auth, signIn } = NextAuth({
     session: {
@@ -24,7 +24,7 @@ export const { handlers: { GET, POST }, auth, signIn } = NextAuth({
                         },
                         body: JSON.stringify(data)
                     });
-                    const responseData: loginResponse = await response.json();
+                    const responseData: LoginResponse = await response.json();
                     if (responseData.success) {
                         cookies().set({ name: COOKIE_NAMES.ACCESS_TOKEN, value: responseData.tokens.access, maxAge: COOKIE_TIME.ACCESS_TOKEN, path: "/", httpOnly: true, })
                         cookies().set({ name: COOKIE_NAMES.REFRESH_TOKEN, value: responseData.tokens.refresh, maxAge: COOKIE_TIME.REFRESH_TOKEN, path: "/", httpOnly: true })

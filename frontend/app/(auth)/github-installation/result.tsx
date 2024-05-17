@@ -1,28 +1,26 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { SpinnerIcon } from '@/components/ui/icons';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-export default function ResultPage({ ConnectGithub, installation_id }: { ConnectGithub: (installationId: string) => Promise<{ success: boolean; message: any; }>, installation_id: string }) {
-    const router = useRouter()
+export default function ResultPage({ connectGithub, installation_id }: { connectGithub: (installationId: string) => Promise<{ success: boolean; message: any; }>, installation_id: string }) {
     const [status, setStatus] = useState('Processing')
 
-    if (installation_id && installation_id.length !== 0) {
-        useEffect(() => {
-            async function connectGithub() {
-                const { success, message }: { success: boolean; message: any; } = await ConnectGithub(installation_id)
-                if(success){
-                    toast.success(message)
-                    setStatus("Approved")
-                }else{
-                    toast.error(message)
-                    setStatus("Failed")
-                }
+    useEffect(() => {
+        async function clientconnectGithub() {
+            const { success, message }: { success: boolean; message: any; } = await connectGithub(installation_id)
+            if (success) {
+                toast.success(message)
+                setStatus("Approved")
+            } else {
+                toast.error(message)
+                setStatus("Failed")
             }
-            connectGithub()
-        }, [])
-    }
+        }
+        if (installation_id && installation_id.length !== 0) {
+            clientconnectGithub()
+        }
+    })
 
     return (
         <div className="container relative h-screen flex items-center justify-center">
