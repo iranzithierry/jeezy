@@ -25,7 +25,7 @@ export default function MaintenancePage() {
               Contribute on GitHub</LinkButton>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-6 text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 md:gap-6 text-center sm:text-left">
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">Features</h2>
             <ul className="list-disc pl-6 text-gray-500 dark:text-gray-400">
