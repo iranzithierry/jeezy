@@ -25,7 +25,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             "name",
             "visibility",
             "last_deployed",
-            "collaborators",
             "root_directory",
             "git_repository",
             "technology_used",

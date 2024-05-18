@@ -120,6 +120,9 @@ class GithubInstallationView(generics.CreateAPIView):
                 user.github_private_access_token = response['token']
 
                 if  user.username is None:
+                    user_with_this_username = User.objects.filter(username=new_request['repositories'][0]['owner']['login']).first()
+                    if user_with_this_username:
+                        return Response({"message": "Username of your connected github already existed login with that github account or use other github account", "success": False },  status=status.HTTP_400_BAD_REQUEST )
                     user.username = new_request['repositories'][0]['owner']['login']
                 user.save()
             return Response({"message": "Successifully connected with github", "user": UserSerializer(user).data, "success": True if str(data.status_code).startswith("2") else False, "source": "Github" },  status=data.status_code )

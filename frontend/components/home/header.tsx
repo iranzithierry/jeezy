@@ -35,7 +35,7 @@ export default function Header() {
                     </Link>
                 </div>
                 <div>
-                <LinkButton linkTo='/auth/login'>
+                <LinkButton linkTo='/login'>
                         Sign In
                     </LinkButton>
                 </div>

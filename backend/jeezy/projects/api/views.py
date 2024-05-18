@@ -20,8 +20,9 @@ class GetUserProjects(APIView):
         user = request.user
         projects = Project.objects.filter(user=user)
         if projects.count() != 0:
+            projects = ProjectSerializer(projects, many=True).data
             return Response(
-                {"success": True, "data": ProjectSerializer(projects).data}, status=200
+                {"success": True, "data": projects}, status=200
             )
         else:
             return Response({"success": True, "data": []}, status=200)
@@ -106,21 +107,19 @@ class CreateProjectsSetting(APIView):
         return Response({"success": True, "message": project.id}, status=status.HTTP_200_OK)
 
     def create_environment_variables_project_settings(self, data):
-        values = {
-            "key": data["key"],
-            "value": data["value"],
-        }
         try:
             project = Project.objects.get(id=data["project"], user=self.request.user)
         except Project.DoesNotExist:
             return Response({"success": False, "message": "Can not create envs for uncreate project."}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            env = EnvironmentVariables.objects.get(key=data["key"], project=project)
-            for key, value in values.items():
-                setattr(env, key, value)
+        for env_ in data['envs']:
+            key = env_['key']
+            value = env_['value']
+            try:
+                env = EnvironmentVariables.objects.get(key=key, project=project)
+                env.value = value
                 env.save()
-        except EnvironmentVariables.DoesNotExist:
-            env = EnvironmentVariables.objects.create(**values, project=project)
+            except EnvironmentVariables.DoesNotExist:
+                EnvironmentVariables.objects.create(key=key, value=value, project=project)
         return Response({"success": True}, status=status.HTTP_200_OK)
 
     def create_build_project_settings(self, data):

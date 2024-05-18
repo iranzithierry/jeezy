@@ -33,7 +33,7 @@ export default function Header({ session }: { session?: Session}) {
             </Sheet>
             <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
                 <div className="ml-auto sm:flex-initial items-center flex space-x-2">
-                    <LinkButton linkTo="/projects/new">
+                    <LinkButton linkTo="/dashboard/projects/new">
                         New
                         <Plus className="h-5 w-5" />
                     </LinkButton>
