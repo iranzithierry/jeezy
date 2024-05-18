@@ -278,3 +278,4 @@ jeezy/media/
 .pytest_cache/
 
 jeezy/secrets/*
+.env
