@@ -1,13 +1,18 @@
+# Use an official Python runtime as a parent image
 FROM python:3.11.6
 
-ARG REQUIREMENTS_FILE
+# Set the working directory in the container
+WORKDIR /app
 
-EXPOSE 8000
-
-CMD "gunicorn --bind 0.0.0.0:8000 -w 4 --limit-request-line 6094 --access-logfile - config.wsgi:application"
-
+# Copy the requirements files before copying the rest of the application
 COPY ./requirements/ ./requirements
-RUN pip install -r ./requirements/production.txt
-RUN pip install -r ./requirements/extra.txt
 
-COPY . ./
+# Install dependencies
+RUN pip install -r ./requirements/production.txt && \
+    pip install -r ./requirements/extra.txt
+
+# Copy the rest of the application code to the working directory
+COPY . /app/
+
+# Inform Docker that the container listens on the specified port
+EXPOSE 8000

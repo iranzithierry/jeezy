@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "jeezy"
 env = environ.Env()
 
-READ_DOT_ENV_FILE = True  # env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
+READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
 if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(BASE_DIR / ".env"))
@@ -53,11 +53,11 @@ STATIC_URL = "static/"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'jeezy',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'USER': 'root',
-        'PASSWORD': '1234',
+        'NAME': env.str("DATABASE_NAME"),
+        'USER': env.str("DATABASE_USER"),
+        'PASSWORD': env.str("DATABASE_PASSWORD"),
+        'HOST': env.str("DATABASE_HOST"),
+        'PORT': env.str("DATABASE_PORT"),
         'OPTIONS': {
             'charset': 'utf8mb4',
         }
@@ -84,7 +84,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.messages",
-    # "django.contrib.staticfiles",
+    "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
 ]
@@ -310,3 +310,5 @@ SIMPLE_JWT = {
     "SIGNING_KEY": env("APP_JWT_SIGNING_KEY")
 }
 APPEND_SLASH = True
+
+STATIC_ROOT = str(BASE_DIR / "staticfiles")

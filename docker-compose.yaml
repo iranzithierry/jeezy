@@ -1,11 +1,14 @@
 services:
   mysql:
     image: mysql
-    ports:
-      - 3306:3306
+    container_name: jeezy_mariadb
+    volumes:
+      - data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DB: jeezy
+      MYSQL_DATABASE: jeezy
+    ports:
+      - 3306:3306
   redis:
     image: redis
     ports:
@@ -16,9 +19,17 @@ services:
       - mysql
     ports:
       - 8000:8000
+    container_name: jeezy_backend
     env_file: backend/.env
-    command: "gunicorn --bind 0.0.0.0:8000 -w 4 --limit-request-line 6094 --access-logfile - config.wsgi:application"
+    command: sh -c "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    # command: sh -c "python3 /app/manage.py runserver 0.0.0.0:8000"
+    networks:
+      - default
   frontend:
     image: iranzithierry/jeezy:frontend
     ports:
       - 3000:3000
+    depends_on:
+      - backend
+volumes:
+  data:
