@@ -1,6 +1,6 @@
-FROM node:18
-COPY package*.json .
-RUN pnpm install
-RUN pnpm run build
+FROM node:21.7.3
+COPY package.json pnpm-lock.yaml* ./
+RUN corepack enable pnpm && pnpm install
+RUN corepack enable pnpm && pnpm run build
 COPY . .
-RUN pnpm start
+RUN corepack enable pnpm && pnpm start
