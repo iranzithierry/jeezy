@@ -1,0 +1,24 @@
+services:
+  mysql:
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DB: jeezy
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+  backend:
+    image: iranzithierry/jeezy:backend
+    depends_on:
+      - mysql
+    ports:
+      - 8000:8000
+    env_file: backend/.env
+    command: "gunicorn --bind 0.0.0.0:8000 -w 4 --limit-request-line 6094 --access-logfile - config.wsgi:application"
+  frontend:
+    image: iranzithierry/jeezy:frontend
+    ports:
+      - 3000:3000

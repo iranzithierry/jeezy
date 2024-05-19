@@ -9,3 +9,8 @@ create project environment variable = PENDING
 create building settings= PENDING
 assigning domain= PENDING
 username already existed
+
+
+
+docker build -t iranzithierry/jeezy:backend . 
+docker push iranzithierry/jeezy:backend

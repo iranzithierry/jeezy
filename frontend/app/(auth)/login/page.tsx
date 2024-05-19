@@ -5,6 +5,8 @@ import axios from "axios"
 import BACKEND_URLS from "@/constants/backend-urls"
 import { LoginResponse } from "@/types/auth"
 import { authenticate } from "@/lib/sessions"
+import { Suspense } from "react"
+import FormSkeleton from "@/components/auth/form-skeleton"
 
 export const metadata: Metadata = {
     title: "Login",
@@ -29,7 +31,9 @@ export default async function LoginPage() {
                                 Enter your email below to login  your account
                             </p>
                         </div>
+                        <Suspense fallback={<FormSkeleton/>}>
                         <Form type="login" submitHandler={submitHandler} />
+                        </Suspense>
                     </div>
                 </div>
             </div>

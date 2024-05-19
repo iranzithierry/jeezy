@@ -8,6 +8,7 @@ import BACKEND_URLS from "@/constants/backend-urls"
 import { authenticate } from "@/lib/sessions"
 import { redirect } from "next/navigation"
 import { BaseResponse } from "@/types/http"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
     title: "Sign up",
@@ -32,7 +33,10 @@ export default function SignUp() {
                                 Enter your email below to create your account
                             </p>
                         </div>
+                        <Suspense>
+
                         <EmailForm submitHandler={submitHandler} otpSubmitHandler={otpSubmitHandler} />
+                        </Suspense>
                         <div className="sm:w-[400px] mx-auto">
                             <p className="px-8 text-center text-sm text-muted-foreground">
                                 By clicking continue, you agree to our{" "}
