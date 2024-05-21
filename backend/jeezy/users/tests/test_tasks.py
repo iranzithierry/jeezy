@@ -1,17 +1,13 @@
 import pytest
 from celery.result import EagerResult
 
-from jeezy.users.tasks import get_users_count
-from jeezy.users.tests.factories import UserFactory
+from jeezy.users.tasks import send_otp_code
 
 pytestmark = pytest.mark.django_db
 
 
-def test_user_count(settings):
-    """A basic test to execute the get_users_count Celery task."""
-    batch_size = 3
-    UserFactory.create_batch(batch_size)
+def test_email(settings):
+    """A basic test to send opt code to user a Celery task."""
     settings.CELERY_TASK_ALWAYS_EAGER = True
-    task_result = get_users_count.delay()
+    task_result = send_otp_code("test@test.com", "5435").delay()
     assert isinstance(task_result, EagerResult)
-    assert task_result.result == batch_size

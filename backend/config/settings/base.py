@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "jeezy"
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
+READ_DOT_ENV_FILE = True # env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
 if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(BASE_DIR / ".env"))
@@ -43,6 +43,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
+
+# STATIC FILES
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
 STATIC_URL = "static/"
 
 # DATABASES
@@ -213,9 +216,6 @@ ADMIN_URL = "admin/"
 ADMINS = [("""eBuzzie Technologies, Inc""", "contact@ebuzzie.com")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
-# https://cookiecutter-django.readthedocs.io/en/latest/settings.html#other-environment-settings
-# Force the `admin` sign in process to go through the `django-allauth` workflow
-DJANGO_ADMIN_FORCE_ALLAUTH = env.bool("DJANGO_ADMIN_FORCE_ALLAUTH", default=False)
 
 # LOGGING
 # ------------------------------------------------------------------------------
@@ -295,12 +295,14 @@ CORS_URLS_REGEX = r"^/api/.*$"
 
 # By Default swagger ui is available only to admin user(s). You can change permission classes to change that
 # See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
+SERVE_PERMISSIONS =  {"SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"]} if env.str("MODE", "local") == "production" else {"":""}
 SPECTACULAR_SETTINGS = {
-    "TITLE": "jeezy API",
+    "TITLE": "Jeezy API",
     "DESCRIPTION": "Documentation of API endpoints of jeezy",
     "VERSION": "1.0.0",
-    # "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
+    **SERVE_PERMISSIONS
 }
+
 # Your stuff...
 # ------------------------------------------------------------------------------
 
@@ -310,5 +312,3 @@ SIMPLE_JWT = {
     "SIGNING_KEY": env("APP_JWT_SIGNING_KEY")
 }
 APPEND_SLASH = True
-
-STATIC_ROOT = str(BASE_DIR / "staticfiles")

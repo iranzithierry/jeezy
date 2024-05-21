@@ -2,7 +2,7 @@ from django.urls import path
 from channels.generic.websocket import JsonWebsocketConsumer
 
 
-class ChatConsumer(JsonWebsocketConsumer):
+class Consumer(JsonWebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
@@ -19,5 +19,5 @@ class ChatConsumer(JsonWebsocketConsumer):
 
 
 websocket_urlpatterns = [
-    path("", ChatConsumer.as_asgi()),
+    path("", Consumer.as_asgi()),
 ]

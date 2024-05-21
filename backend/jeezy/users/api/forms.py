@@ -1,11 +1,9 @@
 from django import forms
-from .models import User
-from django.core import validators
+from ..models import User
 class EmailSignUpForm(forms.Form):
     email = forms.EmailField()
 
     def clean_email(self):
-        # token=iw1L6EFGCCxAHFumY86zJx3SPZUkLdkfr5MVyEHpla4egcg0H0mW
         email: str = self.cleaned_data.get('email', '')
         try:
             user = User.objects.get(email=email)

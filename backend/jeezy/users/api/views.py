@@ -1,9 +1,9 @@
 from rest_framework import status, permissions, generics
 from rest_framework.response import Response
 from rest_framework.request import Request
-from jeezy.users.tasks import send_verification_email
+from jeezy.users.tasks import send_otp_code
 from jeezy.users.models import User, EmailVerification
-from jeezy.users.forms import EmailSignUpForm, CompleteSignUpForm, EmailLoginForm
+from backend.jeezy.users.api.forms import EmailSignUpForm, CompleteSignUpForm, EmailLoginForm
 from .serializers import UserSerializer
 from rest_framework.views import APIView
 from .utils import generate_otp, get_tokens_for_user
@@ -15,7 +15,7 @@ class EmailSignUpView(APIView):
             email = form.cleaned_data["email"]
             otp = generate_otp()
             try:
-                send_verification_email.delay(email, otp)
+                send_otp_code.delay(email, otp)
             except Exception:
                 return Response({"message": "We're sorry, there is an issue sending the one-time password to your email. Please try again later.", "success": False}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             user = User.objects.create_user(email=email, password=None, is_active=False)
