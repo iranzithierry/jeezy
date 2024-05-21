@@ -2,7 +2,7 @@ from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.request import Request
 from jeezy.users.models import User
-from backend.jeezy.users.api.forms import GithubSignInForm
+from jeezy.users.api.forms import GithubSignInForm
 from .serializers import UserSerializer
 from rest_framework.views import APIView
 import requests
