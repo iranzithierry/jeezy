@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from "sonner";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Input } from '@/components/ui/input';
@@ -8,12 +8,12 @@ import SubmitButton from '@/components/ui/submit-button';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 
-type EnvsType = {
+export type EnvsType = {
     key: string,
     value: string
 };
 
-export default function EnvSettings({ submitHandler }: { submitHandler: (formData: any, type: string) => Promise<{ success: boolean; message: any; }> }) {
+export default function EnvSettings({ submitHandler, envs }: { submitHandler: (formData: any, type: string) => Promise<{ success: boolean; message: any; }>, envs: EnvsType[] | null }) {
     const [submitting, setSubmitting] = useState<boolean>(false);
     const { register, handleSubmit, control, formState: { errors } } = useForm();
     const { fields, append, remove } = useFieldArray({
@@ -23,9 +23,7 @@ export default function EnvSettings({ submitHandler }: { submitHandler: (formDat
 
     const onSubmit = async (data: any) => {
         setSubmitting(true);
-        const current_project = window.localStorage.getItem("project");
-        let fullData = { ...data, "project": current_project };
-        const response = await submitHandler(fullData, "environment_variables");
+        const response = await submitHandler(data, "environment_variables");
         if (response) {
             const { success, message } = response;
             !success ? toast.error(message) : toast.success("Saved");
@@ -36,6 +34,13 @@ export default function EnvSettings({ submitHandler }: { submitHandler: (formDat
     const handleAddEnv = () => {
         append({ key: "", value: "" });
     };
+    useEffect(() => {
+        if(envs) {
+            envs.map((env, index) => {
+                append({ key: env.key, value: env.value });
+            })
+        }
+    }, [envs])
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

@@ -7,8 +7,9 @@ import axiosAuth from "@/lib/hooks/use-axios-auth";
 import BACKEND_URLS from "@/constants/backend-urls";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/sessions";
-export default async function Page() {
+export default async function Page({ searchParams }: { searchParams: { redirect_back: string } }) {
   const session = await getSession()
+  const installationTargetId = process.env.INSTALLATION_TARGET_ID
   return (
     <section className="w-full py-12 md:py-24 lg:py-32">
       <div className="container px-4 md:px-6">
@@ -19,10 +20,12 @@ export default async function Page() {
               Connect your GitHub account to import your repositories and start building with them.
             </p>
           </div>
-          {session?.user.installed_github ?
-            (<ImportList fetchRepositories={fetchRepositories} />):
-            (<div className="w-full flex justify-center"><PopUp /></div>) 
-            }
+          {session?.user.connected_github ?
+            (<ImportList fetchRepositories={fetchRepositories} />) :
+            (<div className="w-full flex justify-center">
+              <PopUp installationTargetId={installationTargetId} redirectBack={searchParams.redirect_back}/>
+            </div>)
+          }
         </div>
       </div>
     </section>

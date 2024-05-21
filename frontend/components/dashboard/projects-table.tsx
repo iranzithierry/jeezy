@@ -57,7 +57,7 @@ export const columns: ColumnDef<ProjectsResponse>[] = [
                 </Button>
             )
         },
-        cell: ({ row }: any) => <div className="h-10 px-4 py-2">{timeSince(row.getValue("last_deployed"))}</div>,
+        cell: ({ row }: any) => <div className="h-10 px-4 py-2">{row.getValue("last_deployed") ? timeSince(row.getValue("last_deployed")): "Never"}</div>,
     },
     {
         id: "actions",

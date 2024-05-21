@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { CardContent, CardFooter } from "@/components/ui/card"
 import SubmitButton from '@/components/ui/submit-button'
 
-export default function ProjectSettings({ project, repository, submitHandler }: { project: string, repository: string, submitHandler: (formData: any, type: string) => Promise<{ success: boolean; message: any; }> }) {
+export default function ProjectSettings({ project, repository, submitHandler, currentProjectId }: { project: string, repository: string, submitHandler: (formData: any, type: string) => Promise<{ success: boolean; message: any; }>, currentProjectId: string | null }) {
     const [submitting, setSubmitting] = React.useState<boolean>(false)
     const { register, handleSubmit, formState: { errors } } = useForm();
     const onSubmit = async (data: any) => {
@@ -16,7 +16,6 @@ export default function ProjectSettings({ project, repository, submitHandler }: 
         if (response) {
           const { success, message } = response
           !success ? toast.error(message) : toast.success("Saved")
-          success && localStorage.setItem("project", message)
         }
         setSubmitting(false)
     }

@@ -25,7 +25,7 @@ class UserAdmin(auth_admin.UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
-    list_display = ["email", "username", "is_superuser", 'email_verified_at','installed_github',]
+    list_display = ["email", "username", "is_superuser", 'email_verified_at','connected_github',]
     search_fields = ["username", "email"]
     ordering = ["id"]
     list_filter = (

@@ -106,7 +106,7 @@ export default async function page({ params }: PageProps) {
 }
 async function getDeployments(projectId?: number | string) {
     try {
-        const { data } = await useAxiosAuth.get(BACKEND_URLS.PROJECTS + projectId)
+        const { data } = await useAxiosAuth.get(BACKEND_URLS.GET_PROJECTS + projectId)
         return data.deployments
     } catch (err) {
         const error = err as AxiosError

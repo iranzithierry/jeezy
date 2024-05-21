@@ -115,7 +115,7 @@ class GithubInstallationView(generics.CreateAPIView):
                 if  len(new_request['repositories']) < 1:
                     return Response({"message": "You must have atleast one repository to github", "success": False, "source": "Github" },  status=status.HTTP_500_INTERNAL_SERVER_ERROR )
                 
-                user.installed_github = True
+                user.connected_github = True
                 user.github_installaton_id = installation_id
                 user.github_private_access_token = response['token']
 

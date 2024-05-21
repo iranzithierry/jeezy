@@ -1,9 +1,10 @@
 import requests
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.request import Request
-from jeezy.projects.models import Project, EnvironmentVariables
+from jeezy.projects.models import Project, EnvironmentVariables, Deployment
 from jeezy.projects.api.serializers import ProjectSerializer
 from jeezy.users.models import User
 from .forms import (
@@ -27,6 +28,22 @@ class GetUserProjects(APIView):
         else:
             return Response({"success": True, "data": []}, status=200)
 
+class GetUserProject(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        project_id = kwargs.get('id')
+
+        import time
+        time.sleep(15)
+        # Assuming you have a Project model
+        project = Project.objects.filter(user=request.user, id=project_id).first()
+        # envs = EnvironmentVariables.objects.get(project=project)
+        # builds = Deployment.objects.get(project=project)
+        if project:
+            project= ProjectSerializer(project).data
+            return Response({"success": True, "data": project}, status=200)
+        else:
+            return Response({"success": False, "data": "Not found"}, status=200)
 
 class GetUserGithubRepositories(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -62,11 +79,6 @@ class GetUserGithubRepositories(APIView):
 
 class CreateProjectsSetting(APIView):
     permission_classes = [permissions.IsAuthenticated]
-
-    # def __init__(self, **kwargs) -> None:
-    #     super().__init__(**kwargs)
-    #     self.user = None
-    #     self.create_function = None
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         mode = request.GET.get("mode", "basic")

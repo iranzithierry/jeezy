@@ -2,7 +2,7 @@ from django.urls import re_path
 from rest_framework_simplejwt.views import TokenRefreshView
 from jeezy.users.api.views import  MeAPIView, EmailVerificationView, EmailSignUpView, SignInView
 from jeezy.users.api.oauth import GithubInstallationView, GithubAuthenticateView, GithubPrivateAccessToken
-from jeezy.projects.api.views import GetUserProjects ,GetUserGithubRepositories, CreateProjectsSetting
+from jeezy.projects.api.views import GetUserProjects, GetUserProject ,GetUserGithubRepositories, CreateProjectsSetting
 
 
 urlpatterns = [
@@ -22,8 +22,9 @@ urlpatterns = [
     re_path(r"^github/repositories/?", GetUserGithubRepositories.as_view(), name='get_user_repositories'),
 
     # Projects
-    re_path(r"^projects/create/?", CreateProjectsSetting.as_view(), name='create_user_projects'),
+    re_path(r"^project/(?P<id>\d+)/$", GetUserProject.as_view(), name='get_user_project'),
     re_path(r"^projects/?", GetUserProjects.as_view(), name='get_user_projects'),
+    re_path(r"^projects/create/?", CreateProjectsSetting.as_view(), name='create_user_projects'),
 
     re_path(r"^auth/user/?", MeAPIView.as_view(), name='self_get_view'),
 ]

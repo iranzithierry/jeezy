@@ -18,4 +18,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "username","name", "email", "image", "password", "email_verified", "installed_github")
+        fields = ("id", "username","name", "email", "image", "password", "email_verified", "connected_github")

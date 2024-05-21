@@ -1,35 +1,47 @@
 services:
   mysql:
-    image: mysql
-    container_name: jeezy_mariadb
-    volumes:
-      - data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: jeezy
-    ports:
-      - 3306:3306
+      image: mysql
+      container_name: jeezy_mariadb
+      volumes:
+        - data:/var/lib/mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: 1234
+        MYSQL_DATABASE: jeezy
+      ports:
+        - 3306:3306
   redis:
-    image: redis
-    ports:
-      - 6379:6379
+      image: redis
+      ports:
+        - 6379:6379
   backend:
-    image: iranzithierry/jeezy:backend
-    depends_on:
-      - mysql
-    ports:
-      - 8000:8000
-    container_name: jeezy_backend
-    env_file: backend/.env
-    command: sh -c "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
-    # command: sh -c "python3 /app/manage.py runserver 0.0.0.0:8000"
-    networks:
-      - default
+      image: iranzithierry/jeezy:backend
+      depends_on:
+        - mysql
+      ports:
+        - 8000:8000
+      container_name: jeezy_backend
+      env_file: backend/.env
+      command: sh -c "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+      # command: sh -c "python3 /app/manage.py runserver 0.0.0.0:8000"
+      networks:
+        - default
   frontend:
-    image: iranzithierry/jeezy:frontend
-    ports:
-      - 3000:3000
-    depends_on:
-      - backend
+      image: iranzithierry/jeezy:frontend
+      ports:
+        - 3000:3000
+      depends_on:
+        - backend
+  mailpit:
+      image: axllent/mailpit:latest
+      container_name: jeezy_mailpit
+      ports:
+        - 1025:1025  # SMTP server
+        - 8025:8025  # Web interface
+      environment:
+        - MAILPIT_RELAY_HOST=localhost
+        - MAILPIT_RELAY_PORT=25
 volumes:
   data:
+
+networks:
+  default:

@@ -20,7 +20,7 @@ export default function ResultPage({ connectGithub, installation_id }: { connect
         if (installation_id && installation_id.length !== 0) {
             clientconnectGithub()
         }
-    })
+    }, [connectGithub])
 
     return (
         <div className="container relative h-screen flex items-center justify-center">

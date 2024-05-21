@@ -102,7 +102,7 @@ export function Form({ className, type = "signup", withGithub = true, submitHand
               </span>
             </div>
           </div>
-          <Button variant="outline" type="button" disabled={submitting} onClick={() => signIn('github')}>
+          <Button variant="outline" type="button" disabled={submitting} onClick={() => signIn('github', {callbackUrl: "/dashboard", redirect: true})}>
             {submitting ?
               (<SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />) :
               (<GithubIcon className="mr-2 h-4 w-4" />)}

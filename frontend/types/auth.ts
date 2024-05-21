@@ -15,7 +15,7 @@ export interface User {
     email:              string;
     image:              string  | null;
     email_verified:     boolean | null;
-    installed_github:   boolean | null
+    connected_github:   boolean | null
 }
 
 export interface Session {

@@ -15,7 +15,7 @@ class User(AbstractUser):
     github_installaton_id = models.CharField(_("github installaton_id"), blank=True, max_length=255, null=True, unique=True)
     github_public_access_token = models.CharField(_("github access token"), blank=True, max_length=255, null=True, unique=True)
     github_private_access_token = models.CharField(_("github private access token"), blank=True, max_length=255, null=True, unique=True)
-    installed_github = models.BooleanField(_("is user installed github on his/her account"), default=False, null=True)
+    connected_github = models.BooleanField(_("is user installed github on his/her account"), default=False, null=True)
     github_id = models.CharField(_("github id"), blank=True, max_length=255, null=True, unique=True)
     USERNAME_FIELD = "email"
 
