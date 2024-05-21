@@ -23,8 +23,8 @@ urlpatterns = [
 
     # Projects
     re_path(r"^project/(?P<id>\d+)/$", GetUserProject.as_view(), name='get_user_project'),
-    re_path(r"^projects/?", GetUserProjects.as_view(), name='get_user_projects'),
     re_path(r"^projects/create/?", CreateProjectsSetting.as_view(), name='create_user_projects'),
+    re_path(r"^projects/?", GetUserProjects.as_view(), name='get_user_projects'),
 
     re_path(r"^auth/user/?", MeAPIView.as_view(), name='self_get_view'),
 ]

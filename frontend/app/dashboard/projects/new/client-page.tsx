@@ -12,19 +12,17 @@ import { extractErrorValues } from '@/lib/utils'
 import { ProjectsResponse } from '@/types/projects-response'
 
 export default function ClientPage({ submitHandler, project }: { submitHandler: (formData: any, type: string) => Promise<{success: boolean; message: any;}>, project: any , envs: any,  builds: any }) {
-    const [currentProjectId, setProjectId] = useState(null)
-    useEffect(() => {
-        setProjectId(project?.id)
-    },[project])
+    const [currentProjectId, setCurrentProjectId] = useState(null)
+    useEffect(() => setCurrentProjectId(project?.id),[project])
     return (
         <div className="grid gap-6">
-            <Card>
+            {/* <Card>
                 <CardHeader>
                     <CardTitle>Project Settings</CardTitle>
                     <CardDescription>Configure your project settings.</CardDescription>
                 </CardHeader>
                 <ProjectSettings currentProjectId={currentProjectId} submitHandler={submitHandler} project={project} repository={project} />
-            </Card>
+            </Card> */}
             {/* <Card>
                 <CardHeader>
                     <CardTitle>Environment Variables</CardTitle>

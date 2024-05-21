@@ -13,7 +13,7 @@ export type EnvsType = {
     value: string
 };
 
-export default function EnvSettings({ submitHandler, envs }: { submitHandler: (formData: any, type: string) => Promise<{ success: boolean; message: any; }>, envs: EnvsType[] | null }) {
+export default function EnvSettings({ submitHandler, envs }: { submitHandler: (formData: any, type: string) => Promise<{ success: boolean; message: any; }>, envs?: EnvsType[] | null }) {
     const [submitting, setSubmitting] = useState<boolean>(false);
     const { register, handleSubmit, control, formState: { errors } } = useForm();
     const { fields, append, remove } = useFieldArray({

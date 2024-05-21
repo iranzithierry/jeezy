@@ -75,7 +75,7 @@ export const columns: ColumnDef<ProjectsResponse>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem>
-                            <Link href={`/dashboard/settings/${project.id}`}>
+                            <Link href={`/dashboard/projects/update/${project.id}`}>
                                 Settings
                             </Link>
                         </DropdownMenuItem>

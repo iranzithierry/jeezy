@@ -9,12 +9,10 @@ import SubmitButton from '@/components/ui/submit-button'
 import { Button } from '@/components/ui/button';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 
-export default function BuildSettings({ submitHandler, currentProjectId }: { submitHandler: (formData: any, type: string) => Promise<{success: boolean; message: any;}>, currentProjectId: string | null }) {
+export default function BuildSettings({submitHandler}: { submitHandler: (formData: any, type: string) => Promise<{success: boolean; message: any;}> }) {
     const [submitting, setSubmitting] = React.useState<boolean>(false)
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const onSubmit = async (data: any) => {
-        
-    }
+    const onSubmit = async (data: any) => { }
     return (
         <form>
             <CardContent className='grid gap-4'>

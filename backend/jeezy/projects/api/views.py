@@ -31,19 +31,18 @@ class GetUserProjects(APIView):
 class GetUserProject(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request: Request, *args, **kwargs) -> Response:
-        project_id = kwargs.get('id')
+        # import time
+        # time.sleep(15)
 
-        import time
-        time.sleep(15)
-        # Assuming you have a Project model
+        project_id = kwargs.get('id')
         project = Project.objects.filter(user=request.user, id=project_id).first()
         # envs = EnvironmentVariables.objects.get(project=project)
         # builds = Deployment.objects.get(project=project)
         if project:
             project= ProjectSerializer(project).data
-            return Response({"success": True, "data": project}, status=200)
+            return Response({"success": True, "data": project}, status=status.HTTP_200_OK)
         else:
-            return Response({"success": False, "data": "Not found"}, status=200)
+            return Response({"success": False, "data": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
 class GetUserGithubRepositories(APIView):
     permission_classes = [permissions.IsAuthenticated]

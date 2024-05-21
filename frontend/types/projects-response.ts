@@ -7,7 +7,7 @@ export type ProjectsResponse =  {
     technology_used:   string;
     generated_domain:  string;
     cloned_repo_path:  string;
-    repository_source: string;
+    git_repository: string;
     active_deployment: null;
     deployments:       Deployment[];
 }
