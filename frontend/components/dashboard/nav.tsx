@@ -10,10 +10,10 @@ export default function NavItem() {
             title: 'Dashboard',
             pathName: '/dashboard',
         },
-        {
-            title: 'Deployments',
-            pathName: '/dashboard/deployments',
-        },
+        // {
+        //     title: 'Deployments',
+        //     pathName: '/dashboard/deployments',
+        // },
         // {
         //     title: 'Projects',
         //     pathName: '/dashboard/projects',
