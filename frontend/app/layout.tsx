@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={cn("bg-background font-sans antialiased", displayFont.variable, monoFont.variable)}>
         <Toaster richColors position="top-center" />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          {process.env.MAINTENANCE == "true" ? (<MaintenancePage/>) : children}
+          {children}
         </ThemeProvider>
       </body>
     </html>
